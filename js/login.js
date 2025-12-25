@@ -1,9 +1,24 @@
 let form_login = document.querySelector('#form_login')
 let email = document.querySelector('#email')
 let pws = document.querySelector('#pws')
+let result = document.querySelector('#result')
+let email_err = document.querySelector('#em')
+let pws_err = document.querySelector('#ps')
+const toastTrigger = document.getElementById('liveToastBtn')
+const toastLiveExample = document.getElementById('liveToast')
 
 form_login.onsubmit = () => {
     event.preventDefault()
+    if (!email.value) {
+        email_err.classList.remove('d-none')
+        email_err.innerHTML = "Email is required"
+    }
+
+    if (!pws.value) {
+        pws_err.classList.remove('d-none')
+        pws_err.innerHTML = "Password is required"
+    }
+
     const baseUrl = "http://blogs.csm.linkpc.net/api/v1/auth/login"
 
     fetch(baseUrl, {
@@ -16,15 +31,19 @@ form_login.onsubmit = () => {
             password: pws.value
         })
     })
-    .then(res => res.json())
-    .then(res => {
-        if (res.result) {
-            localStorage.setItem("token", res.data.token)
-            location.href = "../index.html"
-        } else {
-            res.message
-        }
-    })
+        .then(res => res.json())
+        .then(res => {
+            if (res.result) {
+                localStorage.setItem("token", res.data.token)
+                location.href = "../index.html"
+            } else {
+                if (toastTrigger) {
+                    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+                    toastBootstrap.show()
+                    result.innerHTML = res.message
+                }
+            }
+        })
 }
 
 function password_show_hide() {
