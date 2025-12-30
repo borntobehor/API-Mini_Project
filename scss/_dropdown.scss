@@ -64,7 +64,7 @@
 
   &[data-bs-popper] {
     top: 100%;
-    left: 0;
+    left: -100%;
     margin-top: var(--#{$prefix}dropdown-spacer);
   }
 
@@ -190,6 +190,7 @@
   &:focus {
     color: var(--#{$prefix}dropdown-link-hover-color);
     text-decoration: if($link-hover-decoration == underline, none, null);
+    border-radius: 10px;
     @include gradient-bg(var(--#{$prefix}dropdown-link-hover-bg));
   }
 
