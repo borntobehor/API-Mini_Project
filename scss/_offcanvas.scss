@@ -40,7 +40,8 @@
       max-width: 100%;
       color: var(--#{$prefix}offcanvas-color);
       visibility: hidden;
-      background-color: var(--#{$prefix}offcanvas-bg);
+      // background-color: var(--#{$prefix}offcanvas-bg);
+      background-color: color-mix(in srgb, var(--#{$prefix}offcanvas-bg) 90%, rgb(210, 210, 210));
       background-clip: padding-box;
       outline: 0;
       @include box-shadow(var(--#{$prefix}offcanvas-box-shadow));
