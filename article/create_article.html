@@ -80,7 +80,7 @@
     </div>
 
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <script>
+<script>
         let category_id = document.querySelector("#category");
 
         const baseUrlCategory =
@@ -107,7 +107,7 @@
         const baseUrl = "http://blogs.csm.linkpc.net/api/v1";
         // let token = localStorage.getItem("token")
         let token =
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjk3MiwiaWF0IjoxNzY2NDgyMTUyLCJleHAiOjE3NjcwODY5NTJ9.M-lLmr3jMYeKOeiXBN-xeiNd_jdOBEux_RfzRx6i3vY";
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwNjIsImlhdCI6MTc2NzM0NTc5MiwiZXhwIjoxNzY3OTUwNTkyfQ.o3nNRkqW0IQdr9uBIIdRxs_MV8C3F8eOgdBCAcYDcfg";
         // const baseUrl = "http://articles.csm.linkpc.net";
 
         let quill = new Quill("#quillEditor", {
@@ -157,8 +157,14 @@
                     });
                 })
                 .then((res) => res.json())
+                .then((res) => {
+                    console.log("Upload thumbnail success:", res);
+                    alert("Article created successfully!");
+                    window.location.href = "../index.html";
+                })
         };
     </script>
+
 
     <!-- <script src="js/bootstrap.bundle.min.js"></script>
 <script src="js/index.js"></script> -->
