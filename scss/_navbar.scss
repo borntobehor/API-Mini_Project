@@ -109,8 +109,7 @@
       padding: $nav-link-padding-y $nav-link-padding-x;
       &.active,
       &.show {
-         // color: var(--#{$prefix}navbar-active-color);
-         background-color: $primary;
+         // background-color: $primary;
          border-radius: $border-radius-xl;
          color: var(--#{$prefix}navbar-active-color);
       }
