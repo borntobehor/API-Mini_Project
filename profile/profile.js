@@ -1,5 +1,5 @@
 // js/profile.js
-import { card } from "./card.js";
+import { card } from "./cardpf.js";
 
 const token = localStorage.getItem("token");
 if (!token) location.href = "../auth/login.html";
