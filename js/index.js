@@ -8,8 +8,10 @@ const content = document.querySelector(".content");
 let isLogin = localStorage.getItem('isLogin');
 let TOKEN = localStorage.getItem('token')
 
-if (( !isLogin || isLogin == null ) && ( !TOKEN || TOKEN == null )) {
+if (( !isLogin || isLogin == null ) || ( !TOKEN || TOKEN == null )) {
    location.href = '../auth/login.html'
+   localStorage.removeItem('isLogin')
+   localStorage.removeItem('token')
 }
 
 const BASE_URL = "http://blogs.csm.linkpc.net/api/v1";

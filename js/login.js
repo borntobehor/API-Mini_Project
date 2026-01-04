@@ -11,7 +11,7 @@ let isLogin = localStorage.getItem('isLogin');
 let TOKEN = localStorage.getItem('token');
 
 if (isLogin && (TOKEN != null || TOKEN)) {
-   location.href = '../auth/login.html'
+   location.href = '../index.html'
 }
 
 form_login.onsubmit = () => {
