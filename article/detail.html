@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Detail</title>
+   <link rel="stylesheet" href="../scss/bootstrap.css" />
+   <link rel="stylesheet" href="../style/style.css" />
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.css" />
+</head>
+
+<body data-bs-theme="dark">
+
+   <header class="position-sticky top-0 z-3 bg-body">
+      <nav class="navbar bg-body navbar-expand-lg py-4">
+         <div class="container">
+            <button onclick="history.back()" class="btn btn-primary rounded-4">
+               <i class="fa-solid fa-arrow-left"></i>
+               <span class="fw-medium">Go Back</span>
+            </button>
+            <a class="navbar-brand" href="#">Offcanvas navbar</a>
+         </div>
+      </nav>
+   </header>
+   
+   <main>
+      <section>
+         <div class="container">
+            <div class="row justify-content-center align-items-center">
+               <div class="col-lg-7 contentDetail my-5">
+                  <div class="col-12 detail"></div>
+                  <div class="d-flex align-items-center justify-content-center" style="height: 70vh;">
+                     <span class="loader mb-5"></span>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+   </main>
+
+</body>
+
+<script src="../js/bootstrap.bundle.min.js"></script>
+<script type="module" src="../js/detail.js"></script>
+
+</html>

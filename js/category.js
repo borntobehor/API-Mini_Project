@@ -12,6 +12,11 @@ const toastLiveExample1 = document.getElementById('liveToast1');
 let edittoastbtn = document.getElementById('edittoastbtn');
 let edit = document.getElementById('edit');
 
+let isLogin = localStorage.getItem('isLogin');
+
+if (!isLogin || isLogin == null) {
+   location.href = '../../auth/login.html'
+}
 
 // API settings
 let base_url = "http://blogs.csm.linkpc.net/api/v1";
