@@ -102,30 +102,30 @@ if(!articleId){
 
 let articleData = null;
 
-async function loadCategories(){
-    try{
-        const res = await fetch(`${baseURL}/categories?_page=1&_per_page=50&sortBy=name&sortDir=ASC`);
-        const data = await res.json();
+function loadCategories(){
+    fetch(`${baseURL}/categories?_page=1&_per_page=50&sortBy=name&sortDir=ASC`)
+    .then(res => res.json())
+    .then(data => {
         const categories = data.data?.items || [];
-        categories.forEach(cat=>{
+        categories.forEach(cat => {
             const opt = document.createElement("option");
             opt.value = cat.id;
             opt.textContent = cat.name;
             categorySelect.appendChild(opt);
         });
-        // set selected category after article loaded
         if(articleData){
             categorySelect.value = articleData.categoryId || "";
         }
-    }catch(err){console.error(err);}
+    })
+    .catch(err => console.error(err));
 }
 
-async function loadArticle(){
-    try{
-        const res = await fetch(`${baseURL}/articles/${articleId}`, {
-            headers:{Authorization:`Bearer ${token}`}
-        });
-        const data = await res.json();
+function loadArticle(){
+    fetch(`${baseURL}/articles/${articleId}`, {
+        headers:{Authorization:`Bearer ${token}`}
+    })
+    .then(res => res.json())
+    .then(data => {
         const a = data.data;
         if(!a) throw new Error("Article not found");
 
@@ -133,53 +133,53 @@ async function loadArticle(){
         titleInput.value = a.title;
         quill.root.innerHTML = a.content;
         if(categorySelect.options.length) categorySelect.value = a.categoryId || "";
-    }catch(err){
+    })
+    .catch(err => {
         console.error(err);
         alert("Failed to load article");
-    }
+    });
 }
 
-document.getElementById("updateForm").onsubmit = async (e)=>{
+document.getElementById("updateForm").onsubmit = function(e){
     e.preventDefault();
     const contentHTML = quill.root.innerHTML.trim();
-    contentInput.value = contentHTML; // optional
-
+    contentInput.value = contentHTML; 
     const catId = parseInt(categorySelect.value,10);
 
-    try{
-        await fetch(`${baseURL}/articles/${articleId}`, {
-            method:"PUT",
-            headers:{
-                Authorization:`Bearer ${token}`,
-                "Content-Type":"application/json"
-            },
-            body: JSON.stringify({
-                title:titleInput.value.trim(),
-                categoryId:catId,
-                content:contentHTML
-            })
-        });
-
-        // upload thumbnail if selected
+    fetch(`${baseURL}/articles/${articleId}`, {
+        method:"PUT",
+        headers:{
+            Authorization:`Bearer ${token}`,
+            "Content-Type":"application/json"
+        },
+        body: JSON.stringify({
+            title:titleInput.value.trim(),
+            categoryId:catId,
+            content:contentHTML
+        })
+    })
+    .then(() => {
         if(thumbnailInput.files[0]){
             const formData = new FormData();
             formData.append("thumbnail", thumbnailInput.files[0]);
-            await fetch(`${baseURL}/articles/${articleId}/thumbnail`, {
+            return fetch(`${baseURL}/articles/${articleId}/thumbnail`, {
                 method:"POST",
                 headers:{Authorization:`Bearer ${token}`},
-                body:formData
+                body: formData
             });
         }
-
+    })
+    .then(() => {
         alert("Article updated successfully!");
         window.location.href="../profile/profile.html";
-
-    }catch(err){
+    })
+    .catch(err => {
         console.error(err);
         alert("Failed to update article");
-    }
+    });
 };
 
+// Load categories and article
 loadCategories();
 loadArticle();
 </script>
