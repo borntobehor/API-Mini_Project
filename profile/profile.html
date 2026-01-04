@@ -1,21 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Profile</title>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Profile</title>
 
-<link rel="stylesheet" href="../scss/bootstrap.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+   <link rel="stylesheet" href="../scss/bootstrap.css">
 
-<style>
-body{background:#171717;font-family:Arial,Helvetica,sans-serif;}
-.card{border-radius:12px;border:none;box-shadow:0 4px 10px rgba(0,0,0,.05);}
-.article-card{transition:.2s; position: relative;}
-.article-card:hover{transform:translateY(-3px);}
-.card-img-top{height:180px;object-fit:cover;}
-.article-actions{position:absolute; top:10px; right:10px; display:flex; gap:5px;}
-</style>
+   <style>
+      body {
+         background: #f5f7fa;
+         font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .card {
+         border-radius: 12px;
+         border: none;
+         box-shadow: 0 4px 10px rgba(0, 0, 0, .05);
+      }
+
+      .article-card {
+         transition: .2s;
+      }
+
+      .article-card:hover {
+         transform: translateY(-3px);
+      }
+
+      .card-img-top {
+         height: 180px;
+         object-fit: cover;
+      }
+
+      .create-wrapper {
+         position: relative;
+         display: inline-block;
+      }
+
+      .create-popup {
+         position: absolute;
+         right: 0;
+         top: 45px;
+         background: #fff;
+         padding: 8px 12px;
+         border-radius: 8px;
+         box-shadow: 0 5px 15px rgba(0, 0, 0, .15);
+         font-size: 13px;
+         white-space: nowrap;
+         display: none;
+      }
+
+      .create-wrapper:hover .create-popup {
+         display: block;
+      }
+   </style>
 </head>
 
 <body>
@@ -135,4 +175,5 @@ loadArticles();
 </script>
 
 </body>
+
 </html>
