@@ -7,6 +7,13 @@ let pws_err = document.querySelector('#ps')
 const toastTrigger = document.getElementById('liveToastBtn')
 const toastLiveExample = document.getElementById('liveToast')
 
+let isLogin = localStorage.getItem('isLogin');
+let TOKEN = localStorage.getItem('token');
+
+if (isLogin && (TOKEN != null || TOKEN)) {
+   location.href = '../auth/login.html'
+}
+
 form_login.onsubmit = () => {
     event.preventDefault()
     if (!email.value) {
@@ -35,6 +42,7 @@ form_login.onsubmit = () => {
         .then(res => {
             if (res.result) {
                 localStorage.setItem("token", res.data.token)
+                localStorage.setItem('isLogin', true);
                 location.href = "../index.html"
             } else {
                 if (toastTrigger) {
