@@ -60,116 +60,119 @@
 
 <body>
 
-   <script>
-      const token = localStorage.getItem("token");
-      if (!token) location.href = "../auth/login.html";
-   </script>
+<script>
+const token = localStorage.getItem("token");
+if(!token) location.href="../auth/login.html";
+</script>
 
-   <div class="container mt-4 col-md-6">
+<div class="container mt-4 col-md-5">
 
-      <h4 class="mb-3 text-center">My Profile</h4>
+<h4 class="text-center mb-3">My Profile</h4>
 
-      <div class="card mb-4 d-flex align-items-center p-3">
-         <img id="avatar" class="rounded-circle mb-2" style="width:80px;height:80px">
-         <div class="text-center">
-            <h5 id="name" class="mb-0"></h5>
-            <small id="lastName" class="text-muted"></small>
-         </div>
-      </div>
+<div class="card mb-4 text-center p-3">
+    <img id="avatar" class="rounded-circle mx-auto mb-2" style="width:80px;height:80px">
+    <h5 id="name"></h5>
+    <small id="lastName" class="text-muted"></small>
+</div>
 
-      <div class="d-flex justify-content-end mb-3">
-         <div class="create-wrapper">
-            <button class="btn btn-primary rounded-circle" data-bs-toggle="modal" data-bs-target="#createModal">
-               <i class="fa-solid fa-plus"></i>
-            </button>
-            <div class="create-popup">Create Article</div>
-         </div>
-      </div>
+<div class="text-end mb-3">
+    <a class="btn btn-primary rounded-circle" href="../article/create_article.html">
+        <i class="fa fa-plus"></i>
+    </a>
+</div>
 
-      <div class="row" id="articleList"></div>
+<div class="row" id="articleList"></div>
 
-      <div class="modal fade" id="createModal" tabindex="-1">
-         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
+</div>
 
-               <div class="modal-header">
-                  <h5 class="modal-title">Create Article</h5>
-                  <button class="btn-close" data-bs-dismiss="modal"></button>
-               </div>
+<script src="../js/bootstrap.bundle.min.js"></script>
 
-               <div class="modal-body p-0">
-                  <iframe src="create.html" style="width:100%;height:520px;border:none"></iframe>
-               </div>
+<script>
+const baseURL = "http://blogs.csm.linkpc.net/api/v1";
+const nameEl = document.getElementById("name");
+const lastNameEl = document.getElementById("lastName");
+const avatarEl = document.getElementById("avatar");
+const articleList = document.getElementById("articleList");
 
-            </div>
-         </div>
-      </div>
+// Load profile
+fetch(`${baseURL}/auth/profile`, {
+    headers:{ Authorization:`Bearer ${token}` }
+})
+.then(res => res.json())
+.then(res => {
+    if(res.data){
+        nameEl.textContent = res.data.firstName || "";
+        lastNameEl.textContent = res.data.lastName || "";
+        avatarEl.src = res.data.avatar || "https://via.placeholder.com/80";
+    }
+})
+.catch(err => console.error("Profile error:", err));
 
-   </div>
+// Load personal articles
+function loadArticles() {
+    fetch(`${baseURL}/articles/own?_page=1&_per_page=100&sortBy=createdAt&sortDir=desc`, {
+        headers:{ Authorization:`Bearer ${token}` }
+    })
+    .then(res => res.json())
+    .then(res => {
+        const articles = Array.isArray(res.data) ? res.data : res.data?.items || [];
+        
+        if(!articles.length){
+            articleList.innerHTML = "<p class='text-center text-muted'>No articles yet</p>";
+            return;
+        }
 
-   <script src="../js/bootstrap.bundle.min.js"></script>
-
-   <script>
-      const baseURL = "http://blogs.csm.linkpc.net/api/v1";
-
-      const nameEl = document.getElementById("name");
-      const lastNameEl = document.getElementById("lastName");
-      const avatarEl = document.getElementById("avatar");
-      const articleList = document.getElementById("articleList");
-
-      fetch(`${baseURL}/auth/profile`, {
-         headers: { Authorization: `Bearer ${token}` }
-      })
-         .then(res => res.json())
-         .then(res => {
-            nameEl.textContent = res.data.firstName;
-            lastNameEl.textContent = res.data.lastName;
-            avatarEl.src = res.data.avatar || "https://via.placeholder.com/80";
-         })
-         .catch(() => location.href = "login.html");
-
-      function loadArticles() {
-         fetch(`${baseURL}/articles/my`, {
-            headers: { Authorization: `Bearer ${token}` }
-         })
-            .then(res => res.json())
-            .then(res => {
-               if (!res.data || !res.data.length) {
-                  articleList.innerHTML =
-                     "<p class='text-center text-muted'>No articles yet</p>";
-                  return;
-               }
-
-               let html = "";
-               res.data.forEach(a => {
-                  html += `
-            <div class="col-12 mb-3">
+        articleList.innerHTML = "";
+        articles.forEach(article => {
+            const col = document.createElement("div");
+            col.className = "col-md-5 col-lg-8 m-auto mb-4";
+            col.innerHTML = `
                 <div class="card article-card">
-                    ${a.image ? `<img src="${a.image}" class="card-img-top">` : ""}
+                    <img src="${article.thumbnail || 'https://via.placeholder.com/300x180'}" class="card-img-top" alt="Thumbnail">
                     <div class="card-body">
-                        <h6 class="card-title">${a.title}</h6>
-                        <p class="card-text text-muted mb-1">
-                            ${a.category?.name || "No category"}
-                        </p>
-                        <small class="text-muted">
-                            ${new Date(a.createdAt).toLocaleDateString()}
-                        </small>
+                        <h5 class="card-title">${article.title}</h5>
+                        <p class="card-text text-truncate">${article.content.replace(/<[^>]+>/g,'').substring(0,100)}...</p>
+                        <div class="article-actions">
+                            <button class="btn btn-sm btn-warning edit-btn" data-id="${article.id}"><i class="fa fa-edit"></i></button>
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="${article.id}"><i class="fa fa-trash"></i></button>
+                        </div>
                     </div>
                 </div>
-            </div>`;
-               });
-               articleList.innerHTML = html;
-            });
-      }
-      loadArticles();
+            `;
+            articleList.appendChild(col);
+        });
 
-      window.addEventListener("message", e => {
-         if (e.data === "ARTICLE_CREATED") {
-            bootstrap.Modal.getInstance(document.getElementById("createModal")).hide();
-            loadArticles();
-         }
-      });
-   </script>
+        // Add edit/delete functionality
+        document.querySelectorAll(".edit-btn").forEach(btn => {
+            btn.onclick = () => {
+                const articleId = btn.dataset.id;
+                location.href = `../article/edit_article.html?id=${articleId}`;
+            }
+        });
+
+        document.querySelectorAll(".delete-btn").forEach(btn => {
+            btn.onclick = () => {
+                const articleId = btn.dataset.id;
+                if(confirm("Are you sure you want to delete this article?")){
+                    fetch(`${baseURL}/articles/${articleId}`, {
+                        method: "DELETE",
+                        headers: { Authorization: `Bearer ${token}` }
+                    })
+                    .then(res => {
+                        if(!res.ok) throw new Error("Failed to delete article");
+                        loadArticles(); // reload after delete
+                    })
+                    .catch(err => alert(err.message));
+                }
+            }
+        });
+
+    })
+    .catch(err => console.error("Articles error:", err));
+}
+
+loadArticles();
+</script>
 
 </body>
 
