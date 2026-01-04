@@ -40,9 +40,10 @@ form_login.onsubmit = () => {
     })
         .then(res => res.json())
         .then(res => {
-            if (res.result) {
+           if (res.result) {
                 localStorage.setItem("token", res.data.token)
                 localStorage.setItem('isLogin', true);
+                localStorage.setItem('userID', res.data.user.id)
                 location.href = "../index.html"
             } else {
                 if (toastTrigger) {

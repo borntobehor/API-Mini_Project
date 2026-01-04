@@ -22,11 +22,13 @@ export const card = (
    thumbnail,
    category,
    id,
+   isOwnedByUser
 ) => {
    const format = new Date(date);
    const formatDate = new Intl.DateTimeFormat("en-US", options12h).format(
       format
    );
+   
    return `
       <div class="col-12 detail">
          <div class="mb-3 d-flex justify-content-between align-items-center bg-body py-2 pe-2 rounded-pill">
@@ -44,7 +46,8 @@ export const card = (
                   <span class="fw-normal text-body-tertiary" style="font-size: 14px">${(date = formatDate)}</span>
                </div>
             </div>
-            <div class="more" id="${id}"></div>
+            <div class="more" id="card-${id}">
+            </div>
          </div>
          
          <div 
@@ -192,7 +195,7 @@ export const cardDetail = (
    `;
 }
 
-export const moreButton = () => {
+export const moreButton = (id) => {
    return `
       <div class="btn-group">
          <button type="button" class="btn rounded-pill" data-bs-toggle="dropdown" aria-expanded="false">
@@ -200,11 +203,11 @@ export const moreButton = () => {
          </button>
          <ul class="dropdown-menu">
             <li>
-               <a class="dropdown-item" href=""><i class="fa-regular fa-pen-to-square"></i>&nbsp;Edit</a>
+               <a class="dropdown-item" href="" onclick=""><i class="fa-regular fa-pen-to-square"></i>&nbsp;Edit</a>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
-               <button class="dropdown-item text-danger"><i class="fa-solid fa-trash-can"></i>&nbsp;Delete</button>
+               <button class="dropdown-item text-danger" data-article-id=""><i class="fa-solid fa-trash-can"></i>&nbsp;Delete</button>
             </li>
          </ul>
       </div>
