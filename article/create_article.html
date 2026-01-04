@@ -80,7 +80,7 @@
     </div>
 
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <script>
+<script>
         let category_id = document.querySelector("#category");
 
         const baseUrlCategory =
@@ -157,14 +157,16 @@
                     });
                 })
                 .then((res) => res.json())
-                .then(() => {
-                location.href = "../profile/profile.html";
+                .then((res) => {
+                    console.log("Upload thumbnail success:", res);
+                    alert("Article created successfully!");
+                    window.location.href = "../profile/profile.html";
                 });
-
-
         };
     </script>
 
+    <!-- <script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/index.js"></script> -->
 </body>
 
 </html>
