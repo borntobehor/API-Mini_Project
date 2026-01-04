@@ -1,4 +1,3 @@
-// js/profile.js
 import { card } from "./cardpf.js";
 
 const token = localStorage.getItem("token");
@@ -11,33 +10,29 @@ const lastNameEl = document.getElementById("lastName");
 const avatarEl = document.getElementById("avatar");
 const articleList = document.getElementById("articleList");
 
-/* ---------- Helpers ---------- */
 const stripHTML = html => html.replace(/<[^>]*>?/gm, '');
 
-/* ---------- Load Profile ---------- */
-async function loadProfile() {
-    try {
-        const res = await fetch(`${baseURL}/auth/profile`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
+function loadProfile() {
+    fetch(`${baseURL}/auth/profile`, {
+        headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => res.json())
+    .then(data => {
         if (data.data) {
             nameEl.textContent = data.data.firstName || "";
             lastNameEl.textContent = data.data.lastName || "";
             avatarEl.src = data.data.avatar || "https://via.placeholder.com/80";
         }
-    } catch (err) {
-        console.error("Profile error:", err);
-    }
+    })
+    .catch(err => console.error("Profile error:", err));
 }
 
-/* ---------- Load Articles ---------- */
-async function loadArticles() {
-    try {
-        const res = await fetch(`${baseURL}/articles/own?_page=1&_per_page=100&sortBy=createdAt&sortDir=desc`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
+function loadArticles() {
+    fetch(`${baseURL}/articles/own?_page=1&_per_page=100&sortBy=createdAt&sortDir=desc`, {
+        headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => res.json())
+    .then(data => {
         const articles = Array.isArray(data.data) ? data.data : data.data?.items || [];
 
         if (!articles.length) {
@@ -63,33 +58,27 @@ async function loadArticles() {
             );
         });
 
-        // Edit/Delete events
         document.querySelectorAll(".edit-btn").forEach(btn => {
             btn.onclick = () => location.href = `update.html?id=${btn.dataset.id}`;
         });
 
         document.querySelectorAll(".delete-btn").forEach(btn => {
-            btn.onclick = async () => {
+            btn.onclick = () => {
                 const id = btn.dataset.id;
                 if (confirm("Are you sure you want to delete this article?")) {
-                    try {
-                        await fetch(`${baseURL}/articles/${id}`, {
-                            method: "DELETE",
-                            headers: { Authorization: `Bearer ${token}` }
-                        });
-                        loadArticles();
-                    } catch {
-                        alert("Failed to delete article");
-                    }
+                    fetch(`${baseURL}/articles/${id}`, {
+                        method: "DELETE",
+                        headers: { Authorization: `Bearer ${token}` }
+                    })
+                    .then(() => loadArticles())
+                    .catch(() => alert("Failed to delete article"));
                 }
             };
         });
 
-    } catch (err) {
-        console.error("Articles error:", err);
-    }
+    })
+    .catch(err => console.error("Articles error:", err));
 }
 
-/* ---------- Initialize ---------- */
 loadProfile();
 loadArticles();
