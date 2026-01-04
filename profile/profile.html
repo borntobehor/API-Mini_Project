@@ -1,78 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Profile</title>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>My Profile</title>
 
+   <link rel="stylesheet" href="../scss/bootstrap.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-<link rel="stylesheet" href="../scss/bootstrap.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-<!-- <style>
-body{
-    background:#171717;
-    font-family:Arial,Helvetica,sans-serif;
-}
-
-.card{
-    border-radius:12px;
-    border:none;
-    box-shadow:0 4px 10px rgba(0,0,0,.05);
-}
-
-.article-card{
-    transition:.2s;
-    position:relative;
-}
-
-.article-card:hover{
-    transform:translateY(-3px);
-}
-
-.card-img-top{
-    height:180px;
-    object-fit:cover;
-}
-
-.article-actions{
-    position:absolute;
-    top:10px;
-    right:10px;
-    display:flex;
-    gap:5px;
-    z-index:2;
-}
-</style> -->
+   <style>
+      body{background:#171717;font-family:Arial,Helvetica,sans-serif;}
+      .card{border-radius:12px;border:none;box-shadow:0 4px 10px rgba(0,0,0,.05);}
+      .article-card{transition:.2s; position: relative;}
+      .article-card:hover{transform:translateY(-3px);}
+      .card-img-top{height:180px;object-fit:cover;}
+      .article-actions{position:absolute; top:10px; right:10px; display:flex; gap:5px;}
+      .create-wrapper{position: relative; display: inline-block;}
+      .create-popup{position: absolute; right: 0; top: 45px; background: #fff; padding: 8px 12px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,.15); font-size: 13px; white-space: nowrap; display: none;}
+      .create-wrapper:hover .create-popup{display:block}
+   </style>
 </head>
 
-<body data-bs-theme="dark" class="">
+<body data-bs-theme="dark">
+
+<script>
+const token = localStorage.getItem("token");
+if(!token) location.href="../auth/login.html";
+</script>
 
 <div class="container mt-4 col-md-5">
 
-    <h4 class="text-center text-light mb-3">My Profile</h4>
+<h4 class="text-center text-light mb-3">My Profile</h4>
 
-    <!-- Profile Card -->
-    <div class="card mb-4 text-center p-3">
-        <img id="avatar" class="rounded-circle mx-auto mb-2" style="width:80px;height:80px;object-fit:cover;">
-        <h5 id="name"></h5>
-        <small id="lastName" class="text-muted"></small>
-    </div>
+<div class="card mb-4 text-center p-3">
+    <img id="avatar" class="rounded-circle mx-auto mb-2" style="width:80px;height:80px;object-fit:cover;">
+    <h5 id="name" class="text-light"></h5>
+    <small id="lastName" class="text-muted"></small>
+</div>
 
-    <!-- Create Article Button -->
-    <div class="text-end mb-3">
-        <a class="btn btn-primary rounded-circle" href="update.html">
-            <i class="fa fa-plus"></i>
-        </a>
-    </div>
+<div class="text-end mb-3">
+    <a class="btn btn-primary rounded-circle" href="../article/create_article.html">
+        <i class="fa fa-plus"></i>
+    </a>
+</div>
 
-    <!-- Articles -->
-    <div class="row" id="articleList"></div>
+<div class="row" id="articleList"></div>
 
 </div>
 
-<!-- Load JS as module -->
-<script type="module" src="profile.js"></script>
 <script src="../js/bootstrap.bundle.min.js"></script>
+
+<script>
+const baseURL = "http://blogs.csm.linkpc.net/api/v1";
+const nameEl = document.getElementById("name");
+const lastNameEl = document.getElementById("lastName");
+const avatarEl = document.getElementById("avatar");
+const articleList = document.getElementById("articleList");
+
+// Load profile
+fetch(`${baseURL}/auth/profile`, {
+    headers:{ Authorization:`Bearer ${token}` }
+})
+.then(res => res.json())
+.then(res => {
+    if(res.data){
+        nameEl.textContent = res.data.firstName || "";
+        lastNameEl.textContent = res.data.lastName || "";
+        avatarEl.src = res.data.avatar || "https://via.placeholder.com/80";
+    }
+})
+.catch(err => console.error("Profile error:", err));
+
+// Load personal articles
+function loadArticles() {
+    fetch(`${baseURL}/articles/own?_page=1&_per_page=100&sortBy=createdAt&sortDir=desc`, {
+        headers:{ Authorization:`Bearer ${token}` }
+    })
+    .then(res => res.json())
+    .then(res => {
+        const articles = Array.isArray(res.data) ? res.data : res.data?.items || [];
+        
+        if(!articles.length){
+            articleList.innerHTML = "<p class='text-center text-muted'>No articles yet</p>";
+            return;
+        }
+
+        articleList.innerHTML = "";
+        articles.forEach(article => {
+            const col = document.createElement("div");
+            col.className = "col-md-5 col-lg-8 m-auto mb-4";
+            col.innerHTML = `
+                <div class="card article-card">
+                    <img src="${article.thumbnail || 'https://via.placeholder.com/300x180'}" class="card-img-top" alt="Thumbnail">
+                    <div class="card-body">
+                        <h5 class="card-title">${article.title}</h5>
+                        <p class="card-text text-truncate">${article.content.replace(/<[^>]+>/g,'').substring(0,100)}...</p>
+                        <div class="article-actions">
+                            <button class="btn btn-sm btn-warning edit-btn" data-id="${article.id}"><i class="fa fa-edit"></i></button>
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="${article.id}"><i class="fa fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            articleList.appendChild(col);
+        });
+
+        // Add edit/delete functionality
+        document.querySelectorAll(".edit-btn").forEach(btn => {
+            btn.onclick = () => {
+                const articleId = btn.dataset.id;
+                location.href = `../article/edit_article.html?id=${articleId}`;
+            }
+        });
+
+        document.querySelectorAll(".delete-btn").forEach(btn => {
+            btn.onclick = () => {
+                const articleId = btn.dataset.id;
+                if(confirm("Are you sure you want to delete this article?")){
+                    fetch(`${baseURL}/articles/${articleId}`, {
+                        method: "DELETE",
+                        headers: { Authorization: `Bearer ${token}` }
+                    })
+                    .then(res => {
+                        if(!res.ok) throw new Error("Failed to delete article");
+                        loadArticles(); // reload after delete
+                    })
+                    .catch(err => alert(err.message));
+                }
+            }
+        });
+
+    })
+    .catch(err => console.error("Articles error:", err));
+}
+
+loadArticles();
+</script>
+
 </body>
+
 </html>
