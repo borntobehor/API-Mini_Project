@@ -13,32 +13,32 @@
 
 <body data-bs-theme="dark">
 
-<script>
-const token = localStorage.getItem("token");
-if(!token) location.href="../auth/login.html";
-</script>
+   <script>
+      const token = localStorage.getItem("token");
+      if (!token) location.href = "../auth/login.html";
+   </script>
 
-<div class="container mt-4 col-md-5">
+   <div class="container mt-4 col-md-5">
 
-<h4 class="text-center text-light mb-3">My Profile</h4>
+      <h4 class="text-center text-light mb-3">My Profile</h4>
 
-<div class="card mb-4 text-center p-3">
-    <img id="avatar" class="rounded-circle mx-auto mb-2" style="width:80px;height:80px;object-fit:cover;">
-    <h5 id="name" class="text-light"></h5>
-    <small id="lastName" class="text-muted"></small>
-</div>
+      <div class="card mb-4 text-center p-3">
+         <img id="avatar" class="rounded-circle mx-auto mb-2" style="width:80px;height:80px;object-fit:cover;">
+         <h5 id="name" class="text-light"></h5>
+         <small id="lastName" class="text-muted"></small>
+      </div>
 
-<div class="text-end mb-3">
-    <a class="btn btn-primary rounded-circle" href="../article/create_article.html">
-        <i class="fa fa-plus"></i>
-    </a>
-</div>
+      <div class="text-end mb-3">
+         <a class="btn btn-primary rounded-circle" href="../article/create_article.html">
+            <i class="fa fa-plus"></i>
+         </a>
+      </div>
 
-<div class="row" id="articleList"></div>
+      <div class="row" id="articleList"></div>
 
-</div>
+   </div>
 
-<script src="../js/bootstrap.bundle.min.js"></script>
+   <script src="../js/bootstrap.bundle.min.js"></script>
 
 <script>
 const avatarEl = document.getElementById("avatar");

@@ -11,7 +11,7 @@ let isLogin = localStorage.getItem('isLogin');
 let TOKEN = localStorage.getItem('token');
 
 if (isLogin && (TOKEN != null || TOKEN)) {
-   location.href = '../auth/login.html'
+   location.href = '../index.html'
 }
 
 form_login.onsubmit = () => {
@@ -40,9 +40,10 @@ form_login.onsubmit = () => {
     })
         .then(res => res.json())
         .then(res => {
-            if (res.result) {
+           if (res.result) {
                 localStorage.setItem("token", res.data.token)
                 localStorage.setItem('isLogin', true);
+                localStorage.setItem('userID', res.data.user.id)
                 location.href = "../index.html"
             } else {
                 if (toastTrigger) {

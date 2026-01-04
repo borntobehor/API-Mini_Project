@@ -8,8 +8,10 @@ const content = document.querySelector(".content");
 let isLogin = localStorage.getItem('isLogin');
 let TOKEN = localStorage.getItem('token')
 
-if (( !isLogin || isLogin == null ) && ( !TOKEN || TOKEN == null )) {
+if (( !isLogin || isLogin == null ) || ( !TOKEN || TOKEN == null )) {
    location.href = '../auth/login.html'
+   localStorage.removeItem('isLogin')
+   localStorage.removeItem('token')
 }
 
 const BASE_URL = "http://blogs.csm.linkpc.net/api/v1";
@@ -44,6 +46,9 @@ function fetchAll() {
 
    fetch(`${BASE_URL}/articles?search=&_page=${page}&_per_page=10&sortBy=createdAt&sortDir=desc`, {
       method: "GET",
+      headers: {
+         'Authorization': `Bearer ${TOKEN}`
+      }
    })
    .then((res) => res.json())
    .then((res) => {
@@ -57,8 +62,16 @@ function fetchAll() {
             element.content,
             element.thumbnail, 
             element.category ? element.category.name : '',
-            element.id
+            element.id,
          )
+         if ((element.creator.id == localStorage.getItem('userID'))) {
+            const moreBtn = document.querySelectorAll(`#card-${element.id}`);
+            // console.log(moreButton);
+            moreBtn.forEach(more => {
+               more.innerHTML = moreButton(element.id);
+               console.log(element.id);
+            })
+         }
       });
       page ++;
       hideLoading()
@@ -68,31 +81,8 @@ function fetchAll() {
 
 fetchAll();
 
-const ownEndpoint = '/articles/own?search=&_page=1&_per_page=100&sortBy=createdAt&sortDir=asc';
-
 // ? tool tip function
 observer.observe(document.body, { childList: true, subtree: true });
 LOGOUT.observe(document.body, { childList: true, subtree: true });
 
 //* more button if it own it will show the three dot button on the top right of the content
-// const more = new MutationObserver((mutationsList, observer) => {
-//    const moreBtn = document.querySelectorAll('.more');
-//    moreBtn.forEach(moreElement => {
-//       fetch(`${BASE_URL}${ownEndpoint}`, {
-//          method: 'GET',
-//          headers: {
-//             'Authorization': `Bearer ${localStorage.getItem('token')}`
-//          }
-//       })
-//       .then(res => res.json())
-//       .then(res => {
-//          res.data.items.forEach(element => {
-//             if(element.id == moreElement.id) {
-//                moreElement.innerHTML = moreButton()
-//                return;
-//             }
-//          })
-//       })
-//    })
-// })
-// more.observe(document.body, { childList: true, subtree: true });

@@ -100,9 +100,12 @@
       let category_id = document.querySelector("#category");
 
       let isLogin = localStorage.getItem('isLogin');
+      let TOKEN = localStorage.getItem('token')
 
-      if (!isLogin || isLogin == null) {
-         location.href = '../../auth/login.html'
+      if (( !isLogin || isLogin == null ) || ( !TOKEN || TOKEN == null )) {
+         location.href = '../auth/login.html'
+         localStorage.removeItem('isLogin')
+         localStorage.removeItem('token')
       }
 
       const baseUrlCategory = "http://blogs.csm.linkpc.net/api/v1/categories?_page=1&_per_page=10&sortBy=name&sortDir=ASC";
@@ -179,78 +182,11 @@
             .then((res) => res.json())
             .then((res) => {
                console.log("Upload thumbnail success:", res);
-               alert("Article created successfully!");
+               // alert("Article created successfully!");
                window.location.href = "../index.html";
             });
       };
    </script>
-  
-        let form = document.querySelector("#FormData");
-        let title = document.querySelector("#title");
-        let thumbnail = document.querySelector("#thumbnail");
-        let content = document.querySelector("#content");
-        const baseUrl = "http://blogs.csm.linkpc.net/api/v1";
-        // let token = localStorage.getItem("token")
-        let token =
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjk3NywiaWF0IjoxNzY3MDY3Nzk5LCJleHAiOjE3Njc2NzI1OTl9.gx8_a2NqWmkM4Jh9TXLvIrIhJ3soHrqO3fRtwqV2RSw";
-        // const baseUrl = "http://articles.csm.linkpc.net";
-
-        let quill = new Quill("#quillEditor", {
-            modules: {
-                toolbar: "#quillToolbar",
-            },
-            theme: "snow",
-        });
-
-        form.onsubmit = (event) => {
-            event.preventDefault();
-
-            let contentHTML = quill.root.innerHTML.trim();
-            const catId = parseInt(category_id.value, 10);
-
-            fetch(baseUrl + "/articles", {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    title: title.value.trim(),
-                    categoryId: catId,
-                    content: contentHTML,
-                }),
-            })
-                .then((res) => res.json())
-                .then((res) => {
-                    console.log("Create article success:", res);
-
-                    const articleId = res.data?.id;
-                    if (!articleId) {
-                        alert("Article ID not returned");
-                        return;
-                    }
-
-                    let formData = new FormData();
-                    formData.append("thumbnail", thumbnail.files[0]);
-
-                    return fetch(`${baseUrl}/articles/${articleId}/thumbnail`, {
-                        method: "POST",
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                        body: formData,
-                    });
-                })
-                .then((res) => res.json())
-                .then((res) => {
-                    console.log("Upload thumbnail success:", res);
-                    alert("Article created successfully!");
-                    window.location.href = "../profile/profile.html";
-                });
-        };
-    </script>
-   <!-- <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/index.js"></script> -->
 </body>
 
 </html>
