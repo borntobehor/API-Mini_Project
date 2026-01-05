@@ -14,6 +14,11 @@ let edit = document.getElementById('edit');
 document.body.style.overflow = "hidden";
 
 
+let isLogin = localStorage.getItem('isLogin');
+
+if (!isLogin || isLogin == null) {
+   location.href = '../../auth/login.html'
+}
 
 // API settings
 let base_url = "http://blogs.csm.linkpc.net/api/v1";

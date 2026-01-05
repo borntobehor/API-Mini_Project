@@ -9,7 +9,7 @@
 
 /* css */
 @import 'loading.css';
-
+@import 'tooltip.css';
 
 body {
    font-family: "Roboto", sans-serif, "Noto Serif Khmer", serif;
