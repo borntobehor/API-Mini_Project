@@ -244,3 +244,4 @@ function createCategory() {
             toastcreate.innerHTML = "Category already created";
         });
 }
+fetchCategories()
