@@ -43,6 +43,8 @@ if(!token) location.href="../auth/login.html";
 <script>
 const avatarEl = document.getElementById("avatar");
 const nameEl = document.getElementById("name");
+const lastNameEl = document.getElementById("lastName");
+const baseURL = "http://blogs.csm.linkpc.net/api/v1";
 fetch(`${baseURL}/auth/profile`, {
     headers:{ Authorization:`Bearer ${token}` }
 })
@@ -59,4 +61,4 @@ fetch(`${baseURL}/auth/profile`, {
 <script src="profile.js" type="module"></script>
 </body>
 
-</html>
+</html> 

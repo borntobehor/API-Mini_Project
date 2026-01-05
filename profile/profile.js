@@ -81,4 +81,4 @@ function loadArticles() {
 }
 
 loadProfile();
-loadArticles();
+loadArticles(); 
