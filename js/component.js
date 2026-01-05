@@ -107,7 +107,7 @@ export const navBar = (
             </div>
             <div class="d-flex align-items-center gap-3">
                ${isHome ? `
-                  <a class="btn btn-outline-primary rounded-4" href="../article/create_article.html">
+                  <a class="btn btn-outline-primary rounded-4" href="../../article/create_article.html">
                      <i class="fa-solid fa-plus"></i>
                      &nbsp; Create Article
                   </a>

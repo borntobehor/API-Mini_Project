@@ -17,8 +17,14 @@
    <header class="position-sticky top-0 z-3 bg-body"></header>
 
    <script>
-      const token = localStorage.getItem("token");
-      if (!token) location.href = "../auth/login.html";
+      let isLogin = localStorage.getItem('isLogin');
+      let TOKEN = localStorage.getItem('token')
+
+      if ((!isLogin || isLogin == null) || (!TOKEN || TOKEN == null)) {
+         location.href = '../auth/login.html'
+         localStorage.removeItem('isLogin')
+         localStorage.removeItem('token')
+      }
    </script>
 
    <div class="container mt-4 col-lg-7">

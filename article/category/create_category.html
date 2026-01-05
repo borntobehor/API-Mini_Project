@@ -49,24 +49,26 @@
 
 <body data-bs-theme="dark">
 
+   <header class="position-sticky top-0 z-3 bg-body"></header>
+
     <main>
         <section>
             <div class="container">
-                <div class="d-flex justify-content-between align-content-center">
-                    <div class="text">
-                        <h2 class="text-primary">Category</h2>
-                        <p class="fs-5">Create and manage categories for different types of article</p>
-                    </div>
-                    <div>
-                        <button class="btn btn-primary text-black mt-3 rounded-4" data-bs-toggle="modal"
-                            data-bs-target="#staticBackdropCreate">Create Category</button>
-                    </div>
-                </div>
             </div>
-        </section>
-        <section>
+         </section>
+         <section>
             <div class="row justify-content-center mt-4">
-                <div class="col-lg-5">
+               <div class="col-lg-5">
+                  <div class="d-flex justify-content-between align-content-center">
+                      <div class="text">
+                          <h2 class="text-primary">Category</h2>
+                          <p class="fs-5">Create and manage categories for different types of article</p>
+                      </div>
+                      <div>
+                          <button class="btn btn-primary text-black mt-3 rounded-4" data-bs-toggle="modal"
+                              data-bs-target="#staticBackdropCreate">Create Category</button>
+                      </div>
+                  </div>
                     <div class="container">
                         <div class="bor p-3 border-bottom-0 rounded-top-3">
                             <div class="b">
@@ -86,12 +88,14 @@
                                 <p class="fw-bold me-5">Action</p>
                             </div>
                         </div>
-                        <div class="bor p hide-scrollbar" style="height: 400px; overflow-y: auto;" id="scrollContainer">
-                            <div id="result"></div>
-                            <div class="d-flex">
-                                <div class="bu"></div>
-                            </div>
-                            <div class="loading" id="loading">Loading...</div>
+                        <div class="row">
+                           <div class="bor p hide-scrollbar" style="height: 400px; overflow-y: auto;" id="scrollContainer">
+                               <div id="result"></div>
+                               <div class="d-flex">
+                                   <div class="bu"></div>
+                               </div>
+                               <div class="loading" id="loading">Loading...</div>
+                           </div>
                         </div>
                         <!-- Modal -->
                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -189,6 +193,6 @@
    </div>
 </body>
 <script src="../../js/bootstrap.bundle.min.js"></script>
-<script src="../../js/category.js"></script>
+<script type="module" src="../../js/category.js"></script>
 
 </html>
