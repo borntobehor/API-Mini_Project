@@ -7,40 +7,49 @@
    <title>My Profile</title>
 
    <link rel="stylesheet" href="../scss/bootstrap.css">
+   <link rel="stylesheet" href="../style/style.css">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 </head>
 
 <body data-bs-theme="dark">
 
+   <header class="position-sticky top-0 z-3 bg-body"></header>
+
    <script>
       const token = localStorage.getItem("token");
       if (!token) location.href = "../auth/login.html";
    </script>
 
-   <div class="container mt-4 col-md-5">
+   <div class="container mt-4 col-lg-7">
 
-      <h4 class="text-center text-light mb-3">My Profile</h4>
+      <!-- <h4 class="text-center text-light mb-3">My Profile</h4> -->
 
-      <div class="card mb-4 text-center p-3">
-         <img id="avatar" class="rounded-circle mx-auto mb-2" style="width:80px;height:80px;object-fit:cover;">
-         <h5 id="name" class="text-light"></h5>
-         <small id="lastName" class="text-muted"></small>
+      <div class="row m-auto justify-content-center">
+         <div class="col-lg-7">
+            <div class="card border mb-4 p-3 rounded-4">
+               <img id="avatar" class="rounded-circle mb-2" style="width:80px;height:80px;object-fit:cover;">
+               <div class="d-flex mt-3">
+                  <h5 id="name" class=""></h5>
+                  &nbsp;
+                  <h5 id="lastName" class=""></h5>
+               </div>
+            </div>
+            <!-- <div class="text-end mb-3 position-fixed end-0 bottom-0 me-5 z-3">
+               <a class="btn btn-primary rounded-4 fw-medium" href="../article/create_article.html">
+                  <i class="fa fa-plus"></i>
+                  Create Article
+               </a>
+            </div> -->
+            <div class="row py-5 gap-5" id="articleList"></div>
+         </div>
       </div>
-
-      <div class="text-end mb-3">
-         <a class="btn btn-primary rounded-circle" href="../article/create_article.html">
-            <i class="fa fa-plus"></i>
-         </a>
-      </div>
-
-      <div class="row" id="articleList"></div>
 
    </div>
 
    <script src="../js/bootstrap.bundle.min.js"></script>
 
-<script>
+<!-- <script>
 const avatarEl = document.getElementById("avatar");
 const nameEl = document.getElementById("name");
 fetch(`${baseURL}/auth/profile`, {
@@ -55,7 +64,7 @@ fetch(`${baseURL}/auth/profile`, {
     }
 })
 
-</script>
+</script> -->
 <script src="profile.js" type="module"></script>
 </body>
 
