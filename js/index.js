@@ -1,63 +1,88 @@
+import { card, moreButton, navBar } from './component.js';
+import { LOGOUT } from './logout.js';
+import { observer } from './tooltip.js';
+
+document.querySelector('header').innerHTML = navBar('active', '', '#', 'article/category/create_category.html', 'profile/profile.html');
 const content = document.querySelector(".content");
+
+let isLogin = localStorage.getItem('isLogin');
+let TOKEN = localStorage.getItem('token')
+
+if (( !isLogin || isLogin == null ) || ( !TOKEN || TOKEN == null )) {
+   location.href = '../auth/login.html'
+   localStorage.removeItem('isLogin')
+   localStorage.removeItem('token')
+}
 
 const BASE_URL = "http://blogs.csm.linkpc.net/api/v1";
 
-const formatDate = new Date().toLocaleString('en-GB', {
-   // weekday: 'short',
-   day: 'numeric',
-   month: 'short', 
-   year: 'numeric', 
-   hour: 'numeric',
-   minute: '2-digit',
-   hour12: true
+//* loading
+const loading = document.querySelector('.loader');
+
+function showLoading() {
+   loading.style.display = "block";
+}
+
+function hideLoading() {
+   loading.style.display = "none";
+}
+
+//* for infinite scroll
+let page = 1;
+let isLoading = false;
+
+window.addEventListener("scroll", () => {
+   if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight) {
+      fetchAll();
+   }
 });
 
-fetch(`${BASE_URL}/articles?search=&_page=1&_per_page=10`, {
-   method: "GET",
-})
+//* fetch all data
+function fetchAll() {
+
+   if (isLoading) return;
+   isLoading = true;
+   showLoading();
+
+   fetch(`${BASE_URL}/articles?search=&_page=${page}&_per_page=10&sortBy=createdAt&sortDir=desc`, {
+      method: "GET",
+      headers: {
+         'Authorization': `Bearer ${TOKEN}`
+      }
+   })
    .then((res) => res.json())
    .then((res) => {
       res.data.items.forEach((element) => {
-         content.innerHTML += `
-            <div class="col-12">
-               <div class="mb-3 d-flex justify-content-between align-items-center bg-body py-2 pe-2 rounded-pill">
-                  <div class="d-flex align-items-center" style="width: fit-content;">
-                     <div class="btn-group">
-                        <button type="button" class="btn shadow-none border-0" data-bs-toggle="dropdown" aria-expanded="false">
-                           <img class="rounded-circle object-fit-cover border" src="${element.creator.avatar}" style="width: 50px; height: 50px;">
-                        </button>
-                        <div class="dropdown-menu">
-                           <img class="object-fit-cover rounded-3" src="${element.creator.avatar}" style="width: 200px; height: 200px;">
-                        </div>
-                     </div>
-                     <div class="">
-                        <h5 class="">${element.creator.firstName} ${element.creator.lastName}</h5>
-                        <h5 class="fs-6 fw-medium text-body-tertiary">${element.createdAt = formatDate}</h5>
-                     </div>
-                  </div>
-                  <div>
-                     <button class="btn btn-lg btn-primary rounded-pill">
-                        <i class="fa-solid fa-ellipsis"></i>
-                     </button>
-                  </div>
-               </div>
-               <div class="card w-100 rounded-5 p-2 shadow-sm">
-                  <div class="card-header bg-transparent border-0">
-                     <h4 class="card-title">${element.title}</h4>
-                  </div>
-                  <div class="card-body">
-                     <p class="card-text" style="
-                        overflow: hidden;
-                        display: -webkit-box;
-                        -webkit-box-orient: vertical;
-                        -webkit-line-clamp: 3;"
-                     >
-                        ${element.content}
-                     </p>
-                     <img class="card-img object-fit-cover rounded-4" src="${element.thumbnail}" alt="${element.title}" style="width: 100%; min-height: 300px; max-height: 500px;">
-                  </div>
-               </div>
-            </div>
-         `;
+         content.innerHTML += card(
+            element.creator.avatar,
+            element.creator.firstName, 
+            element.creator.lastName,
+            element.createdAt, 
+            element.title,
+            element.content,
+            element.thumbnail, 
+            element.category ? element.category.name : '',
+            element.id,
+         )
+         if ((element.creator.id == localStorage.getItem('userID'))) {
+            const moreBtn = document.querySelectorAll(`#card-${element.id}`);
+            // console.log(moreButton);
+            moreBtn.forEach(more => {
+               more.innerHTML = moreButton(element.id);
+               console.log(element.id);
+            })
+         }
       });
-   });
+      page ++;
+      hideLoading()
+      isLoading = false;
+   })
+}
+
+fetchAll();
+
+// ? tool tip function
+observer.observe(document.body, { childList: true, subtree: true });
+LOGOUT.observe(document.body, { childList: true, subtree: true });
+
+//* more button if it own it will show the three dot button on the top right of the content

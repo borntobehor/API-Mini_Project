@@ -1,1 +1,16 @@
+/* icon */
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css");
+
+/* font */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Khmer:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* bootstrap */
+@import '../scss/bootstrap.css';
+
+/* css */
+@import 'loading.css';
+@import 'tooltip.css';
+
+body {
+   font-family: "Roboto", sans-serif, "Noto Serif Khmer", serif;
+}

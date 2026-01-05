@@ -106,11 +106,11 @@
 
    .nav-link {
       border-radius: $border-radius-xl;
-      padding: $nav-link-padding-y $nav-link-padding-x;
+      // padding: $nav-link-padding-y $nav-link-padding-x;
       &.active,
       &.show {
-         // color: var(--#{$prefix}navbar-active-color);
-         background-color: $primary;
+         // background-color: $primary;
+         font-weight: $font-weight-semibold;
          border-radius: $border-radius-xl;
          color: var(--#{$prefix}navbar-active-color);
       }

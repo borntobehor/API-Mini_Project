@@ -1,0 +1,4 @@
+# Ignore everything in .vscode/
+.vscode/*
+!.vscode/launch.json
+!.vscode/settings.json
