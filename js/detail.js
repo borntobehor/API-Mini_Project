@@ -1,4 +1,4 @@
-import { navBar, cardDetail } from './component.js';
+import { navBar, cardDetail, moreButton } from './component.js';
 // document.querySelector('header').innerHTML = navBar('active', '', '../index.html', '../article/category/create_category.html', '../profile/profile.html')
 
 let isLogin = localStorage.getItem('isLogin');
@@ -50,6 +50,13 @@ fetch(`${BASE_URL}/articles/${sessionStorage.getItem('contentID')}`, {
       content.category ? content.category.name : '',
       content.id
    );
+
+   if ((content.creator.id == localStorage.getItem('userID'))) {
+      const moreBtn = document.querySelector(`#card-${content.id}`);
+      // console.log(moreButton);
+      moreBtn.innerHTML = moreButton(content.id);
+   }
+
    hideLoading();
 })
 .catch(( error ) => {

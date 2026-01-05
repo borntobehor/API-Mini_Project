@@ -28,7 +28,7 @@ export const card = (
    const formatDate = new Intl.DateTimeFormat("en-US", options12h).format(
       format
    );
-   
+
    return `
       <div class="col-12 detail">
          <div class="mb-3 d-flex justify-content-between align-items-center bg-body py-2 pe-2 rounded-pill">
@@ -78,7 +78,9 @@ export const navBar = (
    categoryActive,
    homeLocation,
    categoryLocation,
-   profileLocation) => {
+   profileLocation,
+   isHome = false
+) => {
    return `
       <nav class="navbar bg-body navbar-expand-lg py-4 py-lg-0">
          <div class="container">
@@ -103,9 +105,15 @@ export const navBar = (
                   </ul>
                </div>
             </div>
-            <div class="d-flex">
+            <div class="d-flex align-items-center gap-3">
+               ${isHome ? `
+                  <a class="btn btn-outline-primary rounded-4" href="../article/create_article.html">
+                     <i class="fa-solid fa-plus"></i>
+                     &nbsp; Create Article
+                  </a>
+                  ` : ``}
                <div class="dropdown">
-                  <a class="btn btn-primary text-black rounded-4" href="#" role="button" data-bs-toggle="dropdown"
+                  <a class="btn btn-primary text-black text-nowrap rounded-4" href="#" role="button" data-bs-toggle="dropdown"
                      aria-expanded="false">
                      Profile
                      <i class="fa-regular fa-user"></i>
@@ -174,10 +182,7 @@ export const cardDetail = (
                <span class="fw-normal text-body-tertiary" style="font-size: 14px">${(date = formatDate)}</span>
             </div>
          </div>
-         <div>
-            <button class="btn btn-sm rounded-pill">
-               <i class="fa-solid fa-ellipsis"></i>
-            </button>
+         <div class='more' id='card-${id}'>
          </div>
       </div>
       <div class="card w-100 bg-transparent border-0">
@@ -195,7 +200,9 @@ export const cardDetail = (
    `;
 }
 
+//* more button
 export const moreButton = (id) => {
+
    return `
       <div class="btn-group">
          <button type="button" class="btn rounded-pill" data-bs-toggle="dropdown" aria-expanded="false">
@@ -203,11 +210,11 @@ export const moreButton = (id) => {
          </button>
          <ul class="dropdown-menu">
             <li>
-               <a class="dropdown-item" href="" onclick=""><i class="fa-regular fa-pen-to-square"></i>&nbsp;Edit</a>
+               <button class="dropdown-item" onclick="location.href='../profile/update.html?id=${id}'" id="${id}"><i class="fa-regular fa-pen-to-square"></i>&nbsp;Edit</button>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
-               <button class="dropdown-item text-danger" data-article-id=""><i class="fa-solid fa-trash-can"></i>&nbsp;Delete</button>
+               <button class="dropdown-item text-danger delete" id="${id}" onclick="test(${id})"><i class="fa-solid fa-trash-can"></i>&nbsp;Delete</button>
             </li>
          </ul>
       </div>
