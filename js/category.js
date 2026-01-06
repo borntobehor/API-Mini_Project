@@ -11,6 +11,8 @@ let createtoastbtn = document.getElementById('createtoastbtn');
 const toastLiveExample1 = document.getElementById('liveToast1');
 let edittoastbtn = document.getElementById('edittoastbtn');
 let edit = document.getElementById('edit');
+document.body.style.overflow = "hidden";
+
 
 let isLogin = localStorage.getItem('isLogin');
 
@@ -45,18 +47,20 @@ function fetchCategories() {
             }
             items.forEach(element => {
                 result.innerHTML += `
-                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                    <div class="d-flex my-2 align-items-center justify-content-between border-bottom py-2 card rounded-4 p-3 overflow-hidden "  style="flex-direction: row ;">
+                        <div>
                         <span>${element.name}</span>
-                        <div class="d-flex justify-content-end">
+                        </div>
+                        <div class="">
                             <button 
-                                class="btn btn-sm btn-secondary me-2"
+                                class="btn btn-sm btn-outline-light me-2 rounded-4"
                                 onclick="getId(${element.id})" data-bs-toggle="modal" data-bs-target="#staticBackdropEdit">
-                                <i class="fa-solid fa-marker"></i>
+                                <i class="fa-regular fa-pen-to-square"></i> Edit
                             </button>
                             <button 
-                                class="btn btn-sm btn-danger"
+                                class="btn btn-sm btn-danger text-light rounded-4"
                                 data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="getId(${element.id})">
-                                <i class="fa-solid fa-trash-can"></i>
+                                <i class="fa-solid fa-trash-can"></i> Delete
                             </button>
                         </div>
                     </div>
@@ -149,7 +153,7 @@ function editCategory() {
                 toastLiveExample1.classList.remove('bg-danger-subtle');
                 toastLiveExample1.classList.remove('border-danger');
             }
-            if(!res.result){
+            if (!res.result) {
                 toastcreate.innerHTML = "Category name already exists";
                 toastLiveExample1.classList.add('text-danger');
                 toastLiveExample1.classList.add('bg-danger-subtle');
@@ -240,3 +244,4 @@ function createCategory() {
             toastcreate.innerHTML = "Category already created";
         });
 }
+fetchCategories()

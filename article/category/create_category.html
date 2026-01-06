@@ -25,141 +25,148 @@
       color: rgb(123, 123, 123);
    }
 
-   .bor {
-      border: 1px solid #9e9e9e;
-   }
+    /* .bor {
+        border: 1px solid #9e9e9e;
+    }
 
-   .p {
-      padding-top: 10px;
-      padding-left: 40px;
-      padding-right: 40px;
-      background-color: #f1f1f1;
-   }
+    .p {
+        padding-top: 10px;
+        padding-left: 40px;
+        padding-right: 40px;
+    } */
+
+    .hide-scrollbar {
+  overflow-y: auto;
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 </style>
 
-<body>
-   <main>
-      <section>
-         <div class="container">
-            <div class="d-flex justify-content-between align-content-center">
-               <div class="text">
-                  <h2 class="text-primary">Category</h2>
-                  <p class="fs-5">
-                     Create and manage categories for different types of
-                     article
-                  </p>
-               </div>
-               <div>
-                  <button class="btn btn-primary text-black mt-3" data-bs-toggle="modal"
-                     data-bs-target="#staticBackdropCreate">
-                     Create Category
-                  </button>
-               </div>
+<body data-bs-theme="dark">
+
+    <main>
+        <section>
+            <div class="container">
+                <div class="d-flex justify-content-between align-content-center">
+                    <div class="text">
+                        <h2 class="text-primary">Category</h2>
+                        <p class="fs-5">Create and manage categories for different types of article</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary text-black mt-3 rounded-4" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdropCreate">Create Category</button>
+                    </div>
+                </div>
             </div>
-         </div>
-      </section>
-      <section>
-         <div class="container">
-            <div class="bor p-3 border-bottom-0 rounded-top-3">
-               <div class="b">
-                  <!-- <input type="text" class="border-0" id="search" placeholder="Search Category ..."> -->
-                  <div class="input-group position-relative">
-                     <span class="input-group-text bg-transparent position-absolute end-0 border-0 z-3">
-                        <i class="fa-solid fa-magnifying-glass mg"></i>
-                     </span>
-                     <input class="form-control rounded-4 p-2 px-3 position-relative z-0"
-                        placeholder="Search Category ..." type="text" id="search" />
-                  </div>
-               </div>
-            </div>
-            <div class="bor p">
-               <div class="d-flex justify-content-between">
-                  <p class="fw-bold">Categories Name</p>
-                  <p class="fw-bold">Action</p>
-               </div>
-            </div>
-            <div class="bor p" style="height: 400px; overflow-y: auto" id="scrollContainer">
-               <div id="result"></div>
-               <div class="d-flex">
-                  <div class="bu"></div>
-               </div>
-               <div class="loading" id="loading">Loading...</div>
-            </div>
-            <!-- Modal -->
-            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-               aria-labelledby="staticBackdropLabel" aria-hidden="true">
-               <div class="modal-dialog modal-dialog-centered">
-                  <div class="modal-content rounded-5">
-                     <!-- <div class="modal-header">
+        </section>
+        <section>
+            <div class="row justify-content-center mt-4">
+                <div class="col-lg-5">
+                    <div class="container">
+                        <div class="bor p-3 border-bottom-0 rounded-top-3">
+                            <div class="b">
+                                <!-- <input type="text" class="border-0" id="search" placeholder="Search Category ..."> -->
+                                <div class="input-group position-relative">
+                                    <span class="input-group-text bg-transparent position-absolute end-0 border-0 z-3">
+                                        <i class="fa-solid fa-magnifying-glass mg"></i>
+                                    </span>
+                                    <input class="form-control rounded-4 p-2 px-3 position-relative z-0"
+                                        placeholder="Search Category ..." type="text" id="search">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bor p">
+                            <div class="d-flex justify-content-between">
+                                <p class="fw-bold">Categories Name</p>
+                                <p class="fw-bold me-5">Action</p>
+                            </div>
+                        </div>
+                        <div class="bor p hide-scrollbar" style="height: 400px; overflow-y: auto;" id="scrollContainer">
+                            <div id="result"></div>
+                            <div class="d-flex">
+                                <div class="bu"></div>
+                            </div>
+                            <div class="loading" id="loading">Loading...</div>
+                        </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content  rounded-5">
+                                    <!-- <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div> -->
-                     <div class="modal-body">
-                        <p class="text-center fs-5 fw-medium">
-                           Are you sure you want to delete this category?
-                        </p>
-                        <div class="d-flex justify-content-center pb-1 gap-4">
-                           <button type="button" class="btn btn-outline-dark rounded-4" data-bs-dismiss="modal">
-                              Cancle
-                           </button>
-                           <button type="button" class="btn btn-primary rounded-4" id="liveToastBtn"
-                              onclick="deleteCategory()" data-bs-dismiss="modal">
-                              Delete
-                           </button>
+                                    <div class="modal-body">
+                                        <p class="text-center fs-5 fw-medium">Are you sure you want to delete this
+                                            category?</p>
+                                        <div class="d-flex justify-content-center pb-1 gap-4">
+                                            <button type="button" class="btn btn-outline-light rounded-4"
+                                                data-bs-dismiss="modal">Cancle</button>
+                                            <button type="button" class="btn btn-danger rounded-4 text-light"
+                                                id="liveToastBtn" onclick="deleteCategory()"
+                                                data-bs-dismiss="modal">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <!-- create modal -->
-            <div class="modal fade" id="staticBackdropCreate" data-bs-backdrop="static" data-bs-keyboard="false"
-               tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-               <div class="modal-dialog modal-dialog-centered">
-                  <div class="modal-content">
-                     <div class="modal-header border-0 pb-0">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                           Create Category
-                        </h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                     </div>
-                     <div class="modal-body">
-                        <p class="fw-medium">Category Name*</p>
-                        <input class="form-control rounded-4 p-2 px-3 position-relative z-0"
-                           placeholder="Search Category ..." type="text" id="create" />
-                     </div>
-                     <div class="modal-footer border-0 d-flex justify-content-center">
-                        <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal"
-                           onclick="createCategory()" id="createtoastbtn">
-                           Create
-                        </button>
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <!-- modal edit -->
-            <div class="modal fade" id="staticBackdropEdit" data-bs-backdrop="static" data-bs-keyboard="false"
-               tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-               <div class="modal-dialog modal-dialog-centered">
-                  <div class="modal-content">
-                     <div class="modal-header border-0 pb-0">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabelEdit">
-                           Edit Category
-                        </h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                     </div>
-                     <div class="modal-body">
-                        <p class="fw-medium">Category Name*</p>
-                        <input class="form-control rounded-4 p-2 px-3 position-relative z-0" type="text" id="edit" />
-                     </div>
-                     <div class="modal-footer border-0 d-flex justify-content-center">
-                        <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal"
-                           onclick="editCategory()" id="edittoastbtn">
-                           <i class="fa-solid fa-pen-to-square"></i> Save
-                        </button>
-                     </div>
-                  </div>
-               </div>
+                        <!-- create modal -->
+                        <div class="modal fade" id="staticBackdropCreate" data-bs-backdrop="static"
+                            data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border rounded-4">
+                                    <div class="modal-header border-0 pb-0">
+                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Category</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="fw-medium">Category Name*</p>
+                                        <input class="form-control rounded-4 p-2 px-3 position-relative z-0"
+                                            placeholder="Create Category ..." type="text" id="create">
+                                    </div>
+                                    <div class="modal-footer border-0 d-flex justify-content-center">
+                                        <button type="button" class="btn btn-primary w-100 rounded-4"
+                                            data-bs-dismiss="modal" onclick="createCategory()"
+                                            id="createtoastbtn">Create</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- modal edit -->
+                        <div class="modal fade" id="staticBackdropEdit" data-bs-backdrop="static"
+                            data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content rounded-4 border">
+                                    <div class="modal-header border-0 pb-0">
+                                        <h1 class="modal-title fs-5" id="staticBackdropLabelEdit">Edit Category</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="fw-medium">Category Name*</p>
+                                        <input class="form-control rounded-4 p-2 px-3 position-relative z-0" type="text"
+                                            id="edit">
+                                    </div>
+                                    <div class="modal-footer border-0 d-flex justify-content-center">
+                                        <button type="button" class="btn btn-primary w-100 rounded-4"
+                                            data-bs-dismiss="modal" onclick="editCategory()" id="edittoastbtn"><i
+                                                class="fa-solid fa-pen-to-square"></i> Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
          </div>
       </section>
