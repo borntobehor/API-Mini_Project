@@ -35,7 +35,13 @@
          <div class="col-lg-7">
             <div class="card border mb-4 p-3 rounded-4">
                <img id="avatar" class="rounded-circle mb-2" style="width:80px;height:80px;object-fit:cover;">
-               <div class="d-flex mt-3">
+               
+                  <input id="avatar_up" type="file" src="" alt="">
+                  <button class="btn btn-primary rounded-4 fw-medium mt-2" onclick="edit()">Update Avatar</button>
+                  <button class="btn btn-primary rounded-4 fw-medium mt-2" onclick="delete_avatar()">Delete Avatar</button>
+               <p id="id">ID: </p>
+               <p id="email">Email: </p>
+               <div class="d-flex">
                   <h5 id="name" class=""></h5>
                   &nbsp;
                   <h5 id="lastName" class=""></h5>
@@ -54,24 +60,37 @@
    </div>
 
    <script src="../js/bootstrap.bundle.min.js"></script>
+   <script src="profile.js" type="module"></script>
+   <script>
+      const baseUrl = "http://blogs.csm.linkpc.net/api/v1";
 
-<!-- <script>
-const avatarEl = document.getElementById("avatar");
-const nameEl = document.getElementById("name");
-fetch(`${baseURL}/auth/profile`, {
-    headers:{ Authorization:`Bearer ${token}` }
-})
-.then(res => res.json())
-.then(res => {
-    if(res.data){
-        nameEl.textContent = res.data.firstName || "";
-        lastNameEl.textContent = res.data.lastName || "";
-        avatarEl.src = res.data.avatar ;
-    }
-})
-
-</script> -->
-<script src="profile.js" type="module"></script>
+      function edit() {
+         formData = new FormData();
+         let avatarFile = document.getElementById("avatar_up");
+         formData.append("avatar", avatarFile.files[0]);
+         fetch(baseUrl + "/profile/avatar",{
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData
+         })
+         .then(res => res.json())
+         .then(data => {
+            location.reload();
+         })
+      }  
+      
+      function delete_avatar() {
+         fetch(baseUrl + "/profile/avatar",{
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+         })
+         .then(res => res.json())
+         .then(data => {
+            location.reload();
+         })
+      }
+      
+   </script>
 </body>
 
 </html>
