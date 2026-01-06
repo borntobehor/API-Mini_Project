@@ -1,6 +1,15 @@
 import { navBar } from "./component.js";
 import { LOGOUT } from './logout.js';
 
+let isLogin = localStorage.getItem('isLogin');
+let TOKEN = localStorage.getItem('token')
+
+if ((!isLogin || isLogin == null) || (!TOKEN || TOKEN == null)) {
+   location.href = '../auth/login.html'
+   localStorage.removeItem('isLogin')
+   localStorage.removeItem('token')
+}
+
 document.querySelector('header').innerHTML = navBar('', 'active', '../../index.html', '#', '../../profile/profile.html', true);
 
 
@@ -19,12 +28,6 @@ let edittoastbtn = document.getElementById('edittoastbtn');
 let edit = document.getElementById('edit');
 document.body.style.overflow = "hidden";
 
-
-let isLogin = localStorage.getItem('isLogin');
-
-if (!isLogin || isLogin == null) {
-   location.href = '../../auth/login.html'
-}
 
 // API settings
 let base_url = "http://blogs.csm.linkpc.net/api/v1";

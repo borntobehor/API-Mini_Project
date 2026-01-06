@@ -16,81 +16,103 @@
 
    <header class="position-sticky top-0 z-3 bg-body"></header>
 
-   <script>
-      let isLogin = localStorage.getItem('isLogin');
-      let TOKEN = localStorage.getItem('token')
-
-      if ((!isLogin || isLogin == null) || (!TOKEN || TOKEN == null)) {
-         location.href = '../auth/login.html'
-         localStorage.removeItem('isLogin')
-         localStorage.removeItem('token')
-      }
-   </script>
-
-   <div class="container mt-4 col-lg-7">
-
-      <!-- <h4 class="text-center text-light mb-3">My Profile</h4> -->
-
-      <div class="row m-auto justify-content-center">
-         <div class="col-lg-7">
-            <div class="card border mb-4 p-3 rounded-4">
-               <img id="avatar" class="rounded-circle mb-2" style="width:80px;height:80px;object-fit:cover;">
-               
-                  <input id="avatar_up" type="file" src="" alt="">
-                  <button class="btn btn-primary rounded-4 fw-medium mt-2" onclick="edit()">Update Avatar</button>
-                  <button class="btn btn-primary rounded-4 fw-medium mt-2" onclick="delete_avatar()">Delete Avatar</button>
-               <p id="id">ID: </p>
-               <p id="email">Email: </p>
-               <div class="d-flex">
-                  <h5 id="name" class=""></h5>
-                  &nbsp;
-                  <h5 id="lastName" class=""></h5>
+   <section>
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4">
+               <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Choose file of photo</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+                  <input class="form-control" id="avatar_up" type="file" src="" alt="">
+               </div>
+               <div class="modal-footer">
+                  <button class="btn btn-danger rounded-4 fw-medium mt-2" id="delete"><i class="fa-regular fa-trash-can"></i> Delete Avatar</button>
+                  <button class="btn btn-primary rounded-4 fw-medium mt-2" id="edit"><i class="fa-solid fa-pen-to-square"></i> Update Avatar</button>
                </div>
             </div>
-            <!-- <div class="text-end mb-3 position-fixed end-0 bottom-0 me-5 z-3">
-               <a class="btn btn-primary rounded-4 fw-medium" href="../article/create_article.html">
-                  <i class="fa fa-plus"></i>
-                  Create Article
-               </a>
-            </div> -->
-            <div class="row py-5 gap-5" id="articleList"></div>
          </div>
       </div>
 
-   </div>
+      <div class="modal fade" id="editProfile" tabindex="-1" aria-labelledby="editProfileLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+               <div class="modal-header">
+               <h1 class="modal-title fs-5" id="editProfilLabel">Edit Profile</h1>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+                  <form>
+                     <div class="mb-3">
+                        <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="firstName" aria-describedby="firstNameHelp" placeholder="First name">
+                     </div>
+                     <div class="mb-3">
+                        <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="lastName" aria-describedby="lastNameHelp" placeholder="Last name">
+                     </div>
+                     <div class="mb-3">
+                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Email">
+                     </div>
+                  </form>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary change" data-bs-dismiss="modal">Save changes</button>
+               </div>
+            </div>
+         </div>
+      </div>
 
-   <script src="../js/bootstrap.bundle.min.js"></script>
-   <script src="profile.js" type="module"></script>
-   <script>
-      const baseUrl = "http://blogs.csm.linkpc.net/api/v1";
+      <div class="container mt-4">
+         <!-- <h4 class="text-center text-light mb-3">My Profile</h4> -->
+         
+         <div class="row m-auto justify-content-center">
+            <div class="col-lg-7">
+               <div class="card border mb-4 p-3 rounded-5">
+                  <div class="d-flex justify-content-between align-items-start">
+                     <div class="d-flex flex-column gap-4">
+                        <div class="d-flex position-relative" style="width: fit-content;">
+                           <img id="avatar" class="rounded-circle d-block" style="width:80px;height:80px;object-fit:cover;">
+                           <button type="button" class="btn btn-sm btn-primary rounded-5 position-absolute" data-bs-toggle="modal" data-bs-target="#exampleModal" style="bottom: -10px;right: -10px">
+                              <i class="fa-solid fa-pen"></i>
+                           </button>
+                        </div>
+                        <div class="">
+                           <div class="d-flex">
+                              <h5 class="firstName"></h5>
+                              &nbsp;
+                              <h5 class="lastName"></h5>
+                           </div>
+                           <h6 class="email text-muted"></h6>
+                        </div>
+                     </div>
+                     <button type="button" class="btn btn-primary rounded-5" data-bs-toggle="modal" data-bs-target="#editProfile">
+                        <i class="fa-solid fa-pen"></i> Edit Profile
+                     </button>
+                  </div>
+                  <!-- <p id="id">ID: </p>
+                  <p id="email">Email: </p> -->
+               </div>
+               <hr style="margin-block: 50px;">
+            </div>
+         </div>
+      </div>
+   </section>
 
-      function edit() {
-         formData = new FormData();
-         let avatarFile = document.getElementById("avatar_up");
-         formData.append("avatar", avatarFile.files[0]);
-         fetch(baseUrl + "/profile/avatar",{
-            method: "POST",
-            headers: { Authorization: `Bearer ${token}` },
-            body: formData
-         })
-         .then(res => res.json())
-         .then(data => {
-            location.reload();
-         })
-      }  
-      
-      function delete_avatar() {
-         fetch(baseUrl + "/profile/avatar",{
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` },
-         })
-         .then(res => res.json())
-         .then(data => {
-            location.reload();
-         })
-      }
-      
-   </script>
+   
+   <section>
+      <div class="container">
+         <div class="row justify-content-center align-items-center">
+            <div class="col-lg-7 content d-flex flex-wrap gap-5 pb-5"></div>
+         </div>
+         <span class="loader m-auto my-5"></span>
+      </div>
+   </section>
 </body>
+<script src="../js/bootstrap.bundle.min.js"></script>
+<script type="module" src="profile1.js"></script>
 
 </html>

@@ -17,6 +17,7 @@ export const LOGOUT = new MutationObserver((mutationsList, observer) => {
          } else {
             location.href = '../../auth/login.html'
             localStorage.removeItem('token');
+            sessionStorage.clear();
          }
       }).catch(error => {
          console.log(error.message);

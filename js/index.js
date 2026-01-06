@@ -2,9 +2,6 @@ import { card, moreButton, navBar } from './component.js';
 import { LOGOUT } from './logout.js';
 import { observer } from './tooltip.js';
 
-document.querySelector('header').innerHTML = navBar('active', '', '#', 'article/category/create_category.html', 'profile/profile.html', true);
-const content = document.querySelector(".content");
-
 let isLogin = localStorage.getItem('isLogin');
 let TOKEN = localStorage.getItem('token')
 
@@ -13,6 +10,9 @@ if ((!isLogin || isLogin == null) || (!TOKEN || TOKEN == null)) {
    localStorage.removeItem('isLogin')
    localStorage.removeItem('token')
 }
+
+document.querySelector('header').innerHTML = navBar('active', '', '#', 'article/category/create_category.html', 'profile/profile.html', true);
+const content = document.querySelector(".content");
 
 const BASE_URL = "http://blogs.csm.linkpc.net/api/v1";
 
@@ -63,6 +63,7 @@ function fetchAll() {
                element.thumbnail,
                element.category ? element.category.name : '',
                element.id,
+               element.creator.id
             )
             if ((element.creator.id == localStorage.getItem('userID'))) {
                const moreBtn = document.querySelectorAll(`#card-${element.id}`);

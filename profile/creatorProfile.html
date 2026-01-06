@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Profile</title>
+   <link rel="stylesheet" href="../scss/bootstrap.css" />
+   <link rel="stylesheet" href="../style/style.css" />
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.css" />
+</head>
+<body data-bs-theme="dark">
+   <header class="position-sticky top-0 z-3 bg-body"></header>
+   
+   <main>
+      <section>
+         <div class="container mt-4">
+            <div class="row m-auto justify-content-center">
+               <div class="col-lg-7">
+                  <div class="card border p-3 rounded-5 mb-4">
+                        <div class="d-flex flex-column gap-4 align-items-center">
+                           <img id="avatar" class="rounded-circle d-block" style="width:80px;height:80px;object-fit:cover;">
+                           <div class="d-flex">
+                              <h5 id="firstName" class=""></h5>
+                              &nbsp;
+                              <h5 id="lastName" class=""></h5>
+                           </div>
+                     </div>
+                  </div>
+                  <hr style="margin-block: 50px;">
+               </div>
+            </div>
+         </div>
+      </section>
+      <section>
+         <div class="container">
+            <div class="row justify-content-center align-items-center">
+               <div class="col-lg-7 content d-flex flex-wrap gap-5 pb-5"></div>
+            </div>
+            <span class="loader m-auto justify-self-center mb-5"></span>
+         </div>
+      </section>
+   </main>
+</body>
+<script src="../js/bootstrap.bundle.min.js"></script>
+<script type="module" src="../js/creatorProfile.js"></script>
+</html>
