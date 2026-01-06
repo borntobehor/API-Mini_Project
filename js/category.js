@@ -1,3 +1,9 @@
+import { navBar } from "./component.js";
+import { LOGOUT } from './logout.js';
+
+document.querySelector('header').innerHTML = navBar('', 'active', '../../index.html', '#', '../../profile/profile.html', true);
+
+
 // DOM elements
 let result = document.getElementById('result');
 let search = document.getElementById('search');
@@ -245,3 +251,5 @@ function createCategory() {
         });
 }
 fetchCategories()
+
+LOGOUT.observe(document.body, { childList: true, subtree: true });
