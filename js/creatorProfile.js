@@ -1,4 +1,4 @@
-import { card, moreButton, navBar } from './component.js';
+import { card, navBar } from './component.js';
 import { LOGOUT } from './logout.js';
 import { observer } from './tooltip.js';
 
@@ -55,7 +55,7 @@ fetch(`${BASE_URL}/articles/${sessionStorage.getItem('contentID')}`, {
    const data = res.data.creator;
    profile.src = data.avatar;
    firstName.innerText = data.firstName
-   lastName.innerText = data.firstName
+   lastName.innerText = data.lastName
    if (isLoading) return;
    isLoading = true;
    showLoading();
