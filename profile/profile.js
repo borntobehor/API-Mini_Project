@@ -11,8 +11,13 @@ document.querySelector("header").innerHTML = navBar(
    true
 );
 
-const token = localStorage.getItem("token");
-if (!token) location.href = "../auth/login.html";
+let isLogin = localStorage.getItem('isLogin');
+let TOKEN = localStorage.getItem('token')
+
+if ((!isLogin || isLogin == null) || (!TOKEN || TOKEN == null)) {
+   location.href = '../auth/login.html'
+   localStorage.clear();
+}
 
 const baseURL = "http://blogs.csm.linkpc.net/api/v1";
 
@@ -33,6 +38,7 @@ function loadProfile() {
    })
       .then((res) => res.json())
       .then((data) => {
+         console.log(data.data.avatar);
          if (data.data) {
             nameEl.textContent = data.data.firstName || "";
             lastNameEl.textContent = data.data.lastName || "";

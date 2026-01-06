@@ -22,7 +22,7 @@ export const card = (
    thumbnail,
    category,
    id,
-   isOwnedByUser
+   userID
 ) => {
    const format = new Date(date);
    const formatDate = new Intl.DateTimeFormat("en-US", options12h).format(
@@ -42,7 +42,7 @@ export const card = (
                   </div>
                </div>
                <div class="">
-                  <h5 class="fw-bold"><a href="" class="link-body-emphasis link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">${firstName} ${lastName}</a></h5>
+                  <h5 class="fw-bold"><a href="../profile/creatorProfile.html" class="link-body-emphasis link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" onclick="sessionStorage.setItem('creatorID', ${userID}); sessionStorage.setItem('contentID', ${id})">${firstName} ${lastName}</a></h5>
                   <span class="fw-normal text-body-tertiary" style="font-size: 14px">${(date = formatDate)}</span>
                </div>
             </div>
@@ -53,7 +53,7 @@ export const card = (
          <div 
             class="card w-100 rounded-5 p-2 shadow-sm target"
             onclick="
-               location.href = 'article/detail.html';
+               location.href = '../article/detail.html';
                sessionStorage.setItem('contentID', ${id});
             "
             style="cursor: pointer;"
@@ -146,7 +146,6 @@ export const navBar = (
             </div>
          </div>
       </nav>
-   
    `;
 }
 
