@@ -17,17 +17,18 @@
    <header class="position-sticky top-0 z-3 bg-body"></header>
 
    <section>
+      <!-- * update profile -->
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
          <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-4">
-               <div class="modal-header">
+               <div class="modal-header border-0">
                   <h1 class="modal-title fs-5" id="exampleModalLabel">Choose file of photo</h1>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                </div>
                <div class="modal-body">
-                  <input class="form-control" id="avatar_up" type="file" src="" alt="">
+                  <input class="form-control rounded-4" id="avatar_up" type="file" src="" alt="">
                </div>
-               <div class="modal-footer">
+               <div class="modal-footer border-0">
                   <button class="btn btn-danger rounded-4 fw-medium mt-2" id="delete"><i class="fa-regular fa-trash-can"></i> Delete Avatar</button>
                   <button class="btn btn-primary rounded-4 fw-medium mt-2" id="edit"><i class="fa-solid fa-pen-to-square"></i> Update Avatar</button>
                </div>
@@ -35,39 +36,39 @@
          </div>
       </div>
 
+      <!-- * update info -->
       <div class="modal fade" id="editProfile" tabindex="-1" aria-labelledby="editProfileLabel" aria-hidden="true">
          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-               <div class="modal-header">
+            <div class="modal-content rounded-5">
+               <div class="modal-header border-0">
                <h1 class="modal-title fs-5" id="editProfilLabel">Edit Profile</h1>
-               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               <button type="button" class="btn-close rounded-circle" data-bs-dismiss="modal" aria-label="Close"></button>
                </div>
                <div class="modal-body">
                   <form>
                      <div class="mb-3">
                         <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="firstName" aria-describedby="firstNameHelp" placeholder="First name">
+                        <input type="text" class="form-control rounded-4" id="firstName" aria-describedby="firstNameHelp" placeholder="First name">
                      </div>
                      <div class="mb-3">
                         <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="lastName" aria-describedby="lastNameHelp" placeholder="Last name">
+                        <input type="text" class="form-control rounded-4" id="lastName" aria-describedby="lastNameHelp" placeholder="Last name">
                      </div>
                      <div class="mb-3">
                         <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Email">
+                        <input type="email" class="form-control rounded-4" id="email" aria-describedby="emailHelp" placeholder="Email">
                      </div>
                   </form>
                </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary change" data-bs-dismiss="modal">Save changes</button>
+               <div class="modal-footer border-0">
+                  <button type="button" class="btn rounded-4" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary change rounded-4" data-bs-dismiss="modal">Save changes</button>
                </div>
             </div>
          </div>
       </div>
 
       <div class="container mt-4">
-         <!-- <h4 class="text-center text-light mb-3">My Profile</h4> -->
          
          <div class="row m-auto justify-content-center">
             <div class="col-lg-7">
@@ -93,8 +94,6 @@
                         <i class="fa-solid fa-pen"></i> Edit Profile
                      </button>
                   </div>
-                  <!-- <p id="id">ID: </p>
-                  <p id="email">Email: </p> -->
                </div>
                <hr style="margin-block: 50px;">
             </div>
@@ -113,6 +112,6 @@
    </section>
 </body>
 <script src="../js/bootstrap.bundle.min.js"></script>
-<script type="module" src="profile1.js"></script>
+<script type="module" src="profile.js"></script>
 
 </html>
