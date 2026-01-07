@@ -199,7 +199,7 @@ function deleteCategory(id) {
    })
    .then(res => res.json())
    .then(res => {
-      document.querySelector('.delete-message').innerText = `Are you want to delete "${res.data.name}" category?`;
+      document.querySelector('.delete-message').innerHTML = `Are you want to delete <span class="text-danger fw-bold">"${res.data.name}"</span> category?`;
    })
    deleteBtn.onclick = () => {
       fetch(`${BASE_URL}/categories/${id}`, {

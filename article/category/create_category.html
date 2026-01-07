@@ -41,18 +41,18 @@
    </div>
    <!-- * delete -->
     <div class="modal fade" id="deleteCategory" tabindex="-1" aria-labelledby="deleteCategoryLabel" aria-hidden="true">
-      <div class="modal-dialog">
-         <div class="modal-content">
-            <div class="modal-header">
-               <h1 class="modal-title fs-5" id="deleteCategoryLabel">Delete Category</h1>
-               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-dialog modal-dialog-centered">
+         <div class="modal-content rounded-5">
+            <div class="modal-header border-0">
+               <h1 class="modal-title fs-5 text-danger" id="deleteCategoryLabel"><i class="fa-solid fa-circle-exclamation"></i>&nbsp;Delete Category</h1>
+               <button type="button" class="btn-close rounded-circle" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                <p class="delete-message"></p>
             </div>
-            <div class="modal-footer">
-               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-               <button type="button" class="btn btn-primary" id="delete" data-bs-dismiss="modal">Save changes</button>
+            <div class="modal-footer border-0">
+               <button type="button" class="btn rounded-4" data-bs-dismiss="modal">Close</button>
+               <button type="button" class="btn btn-danger rounded-4" id="delete" data-bs-dismiss="modal"><i class="fa-solid fa-trash-can"></i>&nbsp;Delete</button>
             </div>
          </div>
       </div>
@@ -66,7 +66,7 @@
    </div>
 
    <main>
-      <section class="bg-body position-sticky z-2" style="top: 110px;">
+      <section class="bg-body position-sticky z-2 pt-2" style="top: 90px;">
          <div class="container">
             <div class="row m-auto justify-content-center mt-4">
                <div class="col-lg-7">
