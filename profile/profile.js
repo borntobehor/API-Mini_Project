@@ -35,7 +35,7 @@ let isLoading = false;
 
 window.addEventListener("scroll", () => {
    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight) {
-      fetchAll();
+      getProfile();
    }
 });
 
@@ -63,6 +63,11 @@ function getProfile() {
 }
 
 function getOwnArticle() {
+   
+   if (isLoading) return;
+   isLoading = true;
+   showLoading();
+   
    fetch(`${BASE_URL}/articles/own?search=&_page=${page}&_per_page=100&sortBy=createdAt&sortDir=asc`, {
       method: 'GET',
       headers: {
@@ -158,23 +163,3 @@ observer.observe(document.body, { childList: true, subtree: true });
 // ? logout function
 LOGOUT.observe(document.body, { childList: true, subtree: true });
 
-const deleteItems = new MutationObserver((mutationsList, observer) => {
-   const deleteItem = document.querySelectorAll('.delete');
-   deleteItem.forEach(element => {
-      element.onclick = () => {
-         if (confirm("Are you sure you want to delete this article?")) {
-            fetch(`${BASE_URL}/articles/${element.id}`, {
-               method: "DELETE",
-               headers: { Authorization: `Bearer ${TOKEN}` }
-            })
-               .then(() => {
-                  fetchAll();
-                  window.location.reload();
-               })
-               .catch(() => alert("Failed to delete article"));
-         }
-      }
-   })
-   observer.disconnect();
-});
-deleteItems.observe(document.body, { childList: true, subtree: true });

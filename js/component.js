@@ -213,9 +213,24 @@ export const moreButton = (id) => {
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
-               <button class="dropdown-item text-danger delete" id="${id}" onclick="test(${id})"><i class="fa-solid fa-trash-can"></i>&nbsp;Delete</button>
+               <button class="dropdown-item text-danger delete" id="${id}" onclick="deleteItem(${id})"><i class="fa-solid fa-trash-can"></i>&nbsp;Delete</button>
             </li>
          </ul>
       </div>
    `;
 }
+
+const TOKEN = localStorage.getItem('token');
+
+function deleteItem(id) {
+   fetch(`${BASE_URL}/articles/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${TOKEN}` }
+   })
+   .then(() => {
+      location.reload();
+   })
+   .catch(() => alert("Failed to delete article"));
+}
+
+window.deleteItem = deleteItem
