@@ -41,14 +41,28 @@ let perPage = 10;
 let isLoading = false;
 let hasMore = true;
 
+fetchAll();
+
 window.addEventListener("scroll", () => {
-   if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight) {
+   if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50) {
       fetchAll();
    }
 });
 
+if(categoryBtn || deleteBtn) {
+   const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLive)
+   categoryBtn.addEventListener('click', () => {
+      toastBootstrap.show()
+   })
+}
+
 //* toast success
 function toastSuccess(name, message) {
+   toast.classList.remove('bg-danger-subtle');
+   toast.classList.remove('border');
+   toast.classList.remove('border-danger');
+   toast.classList.remove('text-danger');
+
    toast.classList.add('bg-success-subtle');
    toast.classList.add('border');
    toast.classList.add('border-success');
@@ -58,6 +72,11 @@ function toastSuccess(name, message) {
 
 //* toast fail
 function toastFail(name, message) {
+   toast.classList.remove('bg-success-subtle');
+   toast.classList.remove('border');
+   toast.classList.remove('border-success');
+   toast.classList.remove('text-success');
+
    toast.classList.add('bg-danger-subtle');
    toast.classList.add('border');
    toast.classList.add('border-danger');
@@ -65,21 +84,12 @@ function toastFail(name, message) {
    toastMessage.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i>&nbsp;Category ${!name ? '' : `"${name}"`} ${!message ? '' : `${message}`}`
 }
 
-fetchAll();
-
-if(categoryBtn || deleteBtn) {
-   const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLive)
-   categoryBtn.addEventListener('click', () => {
-      toastBootstrap.show()
-   })
-}
-
 function fetchAll() {
    if (isLoading || !hasMore) return;
    isLoading = true;
    showLoading();
 
-   fetch(`${BASE_URL}/categories?_page=${currentPage}&_per_page=${perPage}&sortBy=name&sortDir=ASC&search=${search ? search.value.trim('') : ''}`, {
+   fetch(`${BASE_URL}/categories?_page=${currentPage}&_per_page=${perPage}&sortBy=name&sortDir=ASC&search=${search.value ? search.value.trim('') : ''}`, {
       method: 'GET'
    })
    .then(res => res.json())
@@ -87,13 +97,13 @@ function fetchAll() {
       const items = res. data.items;
 
       if (!items || items.length === 0) {
-            hasMore = false;
-            loading.classList.remove('d-none');
-            loading.classList.remove('d-none');
-            loading.innerHTML = '<i class="fa-solid fa-warning"></i> &nbsp; No more categories';
-            hideLoading();
-            isLoading = false;
-            return;
+         hasMore = false;
+         loading.classList.remove('d-none');
+         loading.classList.remove('d-none');
+         loading.innerHTML = '<i class="fa-solid fa-warning"></i> &nbsp; No more categories';
+         hideLoading();
+         isLoading = false;
+         return;
       }
       items.forEach(element => {
          content.innerHTML += `
@@ -146,21 +156,20 @@ function editCategory(id, ) {
       })
       .then(res => res.json())
       .then(res => {
-         if (res.result) {
-            content.innerHTML = ''
-            currentPage = 1;
-            fetchAll();
-            toastSuccess('', 'updated successfully')
-         }
          if (!res.result) {
             throw new Error('already exist')
          }
+         currentPage = 1;
+         content.innerHTML = ''
+         fetchAll();
+         toastSuccess('', 'updated successfully')
       })
       .catch(error => {
          toastFail(category.value, error.message)
       })
    }
 }
+
 
 //* create
 function createCategory() {
@@ -169,22 +178,20 @@ function createCategory() {
       fetch(`${BASE_URL}/categories`, {
          method: 'POST',
          headers: {
-               'Content-Type': 'application/json',
-               'Authorization': `Bearer ${TOKEN}`
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${TOKEN}`
          },
          body: JSON.stringify({ name: category.value })
       })
       .then(res => res.json())
       .then(res => {
-         if (res.result) {
-            content.innerHTML = ''
-            currentPage = 1;
-            fetchAll();
-            toastSuccess(category.value, 'create successfully')
-         }
          if (!res.result) {
             throw new Error(`already exist`)
          }
+         currentPage = 1;
+         content.innerHTML = ''
+         fetchAll();
+         toastSuccess(category.value, 'create successfully')
       })
       .catch(error => {
          toastFail(category.value, error.message)
@@ -192,38 +199,43 @@ function createCategory() {
    }
 }
 
+const name = '';
+let getId = 0;
+
 //* delete
 function deleteCategory(id) {
-   fetch(`${BASE_URL}/categories/${id}`, {
+   getId = id;
+   fetch(`${BASE_URL}/categories/${getId}`, {
       method: 'GET'
    })
    .then(res => res.json())
    .then(res => {
-      document.querySelector('.delete-message').innerHTML = `Are you want to delete <span class="text-danger fw-bold">"${res.data.name}"</span> category?`;
+      document.querySelector('.delete-message').innerHTML = `<div>Are you want to delete <span class="text-danger fw-bold">"${res.data.name}"</span> category?</div>`;
+      deleteBtn.onclick = () => {
+         fetch(`${BASE_URL}/categories/${getId}`, {
+            method: 'DELETE',
+            headers: {
+               'Authorization': `Bearer ${TOKEN}`
+            }
+         })
+         .then(res => res.json())
+         .then(res => {
+            if (res.result) {
+               name  = res.data.name;
+               content.innerHTML = ''
+               currentPage = 1;
+               fetchAll();
+               toastSuccess(name, 'create successfully')
+            }
+            if (!res.result) {
+               throw new Error(`${res.message}`)
+            }
+         })
+         .catch(error => {
+            toastFail(name, error.message)
+         })
+      }
    })
-   deleteBtn.onclick = () => {
-      fetch(`${BASE_URL}/categories/${id}`, {
-         method: 'DELETE',
-         headers: {
-            'Authorization': `Bearer ${TOKEN}`
-         }
-      })
-      .then(res => res.json())
-      .then(res => {
-         if (res.result) {
-            content.innerHTML = ''
-            currentPage = 1;
-            fetchAll();
-            toastSuccess(res.data.name, 'delete successfully')
-         }
-         if (!res.result) {
-            throw new Error('already deleted ')
-         }
-      })
-      .catch(error => {
-         toastFail(res.data.name, error.message)
-      })
-   }
 }
 
 search.addEventListener('keyup', (event) => {
@@ -232,7 +244,7 @@ search.addEventListener('keyup', (event) => {
    hasMore = true;
    fetchAll();
    if (!search.value) {
-      fetchAll
+      fetchAll()
    }
 });
 
@@ -242,7 +254,7 @@ function searchBtn() {
    hasMore = true;
    fetchAll();
    if (!search.value) {
-      fetchAll
+      fetchAll()
    }
 }
 
@@ -250,3 +262,4 @@ window.editCategory = editCategory
 window.createCategory = createCategory
 window.deleteCategory = deleteCategory
 window.searchBtn = searchBtn
+// window.deleteButton = deleteButton
