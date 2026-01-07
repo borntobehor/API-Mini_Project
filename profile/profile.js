@@ -1,15 +1,6 @@
-import { card, moreButton, navBar } from "../js/component.js";
-import { observer } from "../js/tooltip.js";
-import { LOGOUT } from "../js/logout.js";
-
-document.querySelector("header").innerHTML = navBar(
-   "",
-   "",
-   "../index.html",
-   "../article/category/create_category.html",
-   "profile.html",
-   true
-);
+import { card, moreButton, navBar } from '../js/component.js';
+import { LOGOUT } from '../js/logout.js';
+import { observer } from '../js/tooltip.js';
 
 let isLogin = localStorage.getItem('isLogin');
 let TOKEN = localStorage.getItem('token')
@@ -19,129 +10,171 @@ if ((!isLogin || isLogin == null) || (!TOKEN || TOKEN == null)) {
    localStorage.clear();
 }
 
-const baseURL = "http://blogs.csm.linkpc.net/api/v1";
+const profile = document.getElementById('avatar');
+const firstName = document.getElementsByClassName('firstName')[0];
+const lastName = document.getElementsByClassName('lastName')[0];
+const content = document.querySelector('.content');
+const email = document.querySelector('.email')
 
-let id = document.getElementById("id");
-let email = document.getElementById("email");
-let nameEl = document.getElementById("name");
-let lastNameEl = document.getElementById("lastName");
-let avatarEl = document.getElementById("avatar");
-const articleList = document.getElementById("articleList");
-let avatar = "";
+document.querySelector('header').innerHTML = navBar('', '', '../index.html', '../article/category/create_category.html', '#', true);
 
-const stripHTML = (html) => html.replace(/<[^>]*>?/gm, "");
+//* loading
+const loading = document.querySelector('.loader');
 
-function loadProfile() {
-   fetch(`${baseURL}/auth/profile`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-   })
-      .then((res) => res.json())
-      .then((data) => {
-         console.log(data.data.avatar);
-         if (data.data) {
-            nameEl.textContent = data.data.firstName || "";
-            lastNameEl.textContent = data.data.lastName || "";
-            avatarEl.src = data.data.avatar;
-            id.textContent += data.data.id;
-            email.textContent += data.data.email;
-
-            sessionStorage.setItem("avatar", avatarEl.src);
-            sessionStorage.setItem("fName", nameEl.textContent);
-            sessionStorage.setItem("lName", lastNameEl.textContent);
-         }
-      })
-      .catch((err) => console.error("Profile error:", err));
+function showLoading() {
+   loading.style.display = "block";
 }
 
-function loadArticles() {
-   fetch(
-      `${baseURL}/articles/own?_page=1&_per_page=100&sortBy=createdAt&sortDir=desc`,
-      {
-         headers: { Authorization: `Bearer ${token}` },
+function hideLoading() {
+   loading.style.display = "none";
+}
+
+//* for infinite scroll
+let page = 1;
+let isLoading = false;
+
+window.addEventListener("scroll", () => {
+   if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight) {
+      fetchAll();
+   }
+});
+
+const BASE_URL = "http://blogs.csm.linkpc.net/api/v1";
+
+getProfile();
+
+function getProfile() {
+   fetch(`${BASE_URL}/auth/profile`, {
+      method: 'GET',
+      headers: {
+         'Authorization': `Bearer ${TOKEN}`
       }
-   )
-      .then((res) => res.json())
-      .then((data) => {
-         const articles = Array.isArray(data.data)
-            ? data.data
-            : data.data?.items || [];
-         if (!articles.length) {
-            articleList.innerHTML =
-               "<p class='text-center text-muted'>No articles yet</p>";
-            return;
-         }
-
-         articleList.innerHTML = "";
-
-         articles.forEach((a) => {
-            articleList.insertAdjacentHTML(
-               "beforeend",
-               card(
-                  sessionStorage.getItem("avatar"),
-                  sessionStorage.getItem("fName"),
-                  sessionStorage.getItem("lName"),
-                  a.createdAt,
-                  a.title,
-                  stripHTML(a.content),
-                  a.thumbnail,
-                  a.category?.name,
-                  a.id
-               )
-            );
-         });
-         data.data.items.forEach((element) => {
-            const moreBtn = document.querySelectorAll(`#card-${element.id}`);
-            moreBtn.forEach((more) => {
-               more.innerHTML = moreButton(element.id);
-               const deleteItem = document.querySelectorAll(".delete");
-               deleteItem.forEach((element) => {
-                  element.onclick = () => {
-                     if (
-                        confirm("Are you sure you want to delete this article?")
-                     ) {
-                        fetch(`${baseURL}/articles/${element.id}`, {
-                           method: "DELETE",
-                           headers: {
-                              Authorization: `Bearer ${localStorage.getItem(
-                                 "token"
-                              )}`,
-                           },
-                        })
-                           .then(() => {
-                              loadArticles();
-                              window.location.reload();
-                           })
-                           .catch(() => alert("Failed to delete article"));
-                     }
-                  };
-               });
-            });
-         });
-         document.querySelectorAll(".edit-btn").forEach((btn) => {
-            btn.onclick = () =>
-               (location.href = `update.html?id=${btn.dataset.id}`);
-         });
-
-         document.querySelectorAll(".delete-btn").forEach((btn) => {
-            btn.onclick = () => {
-               const id = btn.dataset.id;
-               if (confirm("Are you sure you want to delete this article?")) {
-                  fetch(`${baseURL}/articles/${id}`, {
-                     method: "DELETE",
-                     headers: { Authorization: `Bearer ${token}` },
-                  })
-                     .then(() => loadArticles())
-                     .catch(() => alert("Failed to delete article"));
-               }
-            };
-         });
-      })
-      .catch((err) => console.error("Articles error:", err));
+   })
+   .then(res => res.json())
+   .then(res => {
+      const data = res.data;
+      profile.src = data.avatar;
+      firstName.innerText = data.firstName;
+      lastName.innerText = data.lastName;
+      email.innerText = data.email;
+      getOwnArticle();
+   })
+   
 }
 
-loadProfile();
-loadArticles();
+function getOwnArticle() {
+   fetch(`${BASE_URL}/articles/own?search=&_page=${page}&_per_page=100&sortBy=createdAt&sortDir=asc`, {
+      method: 'GET',
+      headers: {
+         'Authorization': `Bearer ${TOKEN}`
+      }
+   })
+   .then(res => res.json())
+   .then(res => {
+      res.data.items.forEach(element => {
+         content.innerHTML += card(
+            profile.src,
+            firstName.innerText,
+            lastName.innerText,
+            element.createdAt,
+            element.title,
+            element.content,
+            element.thumbnail,
+            element.category ? element.category.name : '',
+            element.id,
+            localStorage.getItem('userID')
+         );
+         const moreBtn = document.querySelectorAll(`#card-${element.id}`);
+         // console.log(moreButton);
+         moreBtn.forEach(more => {
+            more.innerHTML = moreButton(element.id);
+         })
+      })
+      page++;
+      hideLoading()
+      isLoading = false;
+   })
+}
 
+const saveChange = document.querySelector('.change')
+
+saveChange.onclick = () => {
+   const firstName = document.getElementById('firstName').value
+   const lastName = document.getElementById('lastName').value
+   const email = document.getElementById('email').value
+
+   if(!firstName || !lastName || !email) {
+      return;
+   }
+   fetch(`${BASE_URL}/profile`, {
+      method: 'PUT',
+      headers: { 
+         'Content-Type': 'application/json',
+         'Authorization': `Bearer ${TOKEN}`
+      },
+      body: JSON.stringify({
+         firstName,
+         lastName,
+         email
+      })
+   })
+   .then(res => res.json())
+   .then(() => {
+      location.reload();
+   })
+   .catch(err => console.error(err));
+}
+
+
+document.getElementById('edit').onclick = () => {
+   const formData = new FormData();
+   let avatarFile = document.getElementById("avatar_up");
+   formData.append("avatar", avatarFile.files[0]);
+   fetch(`${BASE_URL}/profile/avatar`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${TOKEN}` },
+      body: formData
+   })
+      .then(res => res.json())
+      .then(data => {
+         location.reload();
+      })
+}
+
+document.getElementById('delete').onclick = () => {
+   fetch(`${BASE_URL}/profile/avatar`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${TOKEN}` },
+   })
+      .then(res => res.json())
+      .then(data => {
+         location.reload();
+      })
+}
+
+// ? tool tip function
 observer.observe(document.body, { childList: true, subtree: true });
+
+// ? logout function
 LOGOUT.observe(document.body, { childList: true, subtree: true });
+
+const deleteItems = new MutationObserver((mutationsList, observer) => {
+   const deleteItem = document.querySelectorAll('.delete');
+   deleteItem.forEach(element => {
+      element.onclick = () => {
+         if (confirm("Are you sure you want to delete this article?")) {
+            fetch(`${BASE_URL}/articles/${element.id}`, {
+               method: "DELETE",
+               headers: { Authorization: `Bearer ${TOKEN}` }
+            })
+               .then(() => {
+                  fetchAll();
+                  window.location.reload();
+               })
+               .catch(() => alert("Failed to delete article"));
+         }
+      }
+   })
+   observer.disconnect();
+});
+deleteItems.observe(document.body, { childList: true, subtree: true });
