@@ -22,11 +22,13 @@ export const card = (
    thumbnail,
    category,
    id,
+   userID
 ) => {
    const format = new Date(date);
    const formatDate = new Intl.DateTimeFormat("en-US", options12h).format(
       format
    );
+
    return `
       <div class="col-12 detail">
          <div class="mb-3 d-flex justify-content-between align-items-center bg-body py-2 pe-2 rounded-pill">
@@ -40,17 +42,18 @@ export const card = (
                   </div>
                </div>
                <div class="">
-                  <h5 class="fw-bold"><a href="" class="link-body-emphasis link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">${firstName} ${lastName}</a></h5>
+                  <h5 class="fw-bold"><a href="../profile/creatorProfile.html" class="link-body-emphasis link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" onclick="sessionStorage.setItem('creatorID', ${userID}); sessionStorage.setItem('contentID', ${id})">${firstName} ${lastName}</a></h5>
                   <span class="fw-normal text-body-tertiary" style="font-size: 14px">${(date = formatDate)}</span>
                </div>
             </div>
-            <div class="more" id="${id}"></div>
+            <div class="more" id="card-${id}">
+            </div>
          </div>
          
          <div 
             class="card w-100 rounded-5 p-2 shadow-sm target"
             onclick="
-               location.href = 'article/detail.html';
+               location.href = '../article/detail.html';
                sessionStorage.setItem('contentID', ${id});
             "
             style="cursor: pointer;"
@@ -75,7 +78,9 @@ export const navBar = (
    categoryActive,
    homeLocation,
    categoryLocation,
-   profileLocation) => {
+   profileLocation,
+   isHome = false
+) => {
    return `
       <nav class="navbar bg-body navbar-expand-lg py-4 py-lg-0">
          <div class="container">
@@ -100,9 +105,15 @@ export const navBar = (
                   </ul>
                </div>
             </div>
-            <div class="d-flex">
+            <div class="d-flex align-items-center gap-3">
+               ${isHome ? `
+                  <a class="btn btn-outline-primary rounded-4" href="../../../../article/create_article.html">
+                     <i class="fa-solid fa-plus"></i>
+                     &nbsp; Create Article
+                  </a>
+                  ` : ``}
                <div class="dropdown">
-                  <a class="btn btn-primary text-black rounded-4" href="#" role="button" data-bs-toggle="dropdown"
+                  <a class="btn btn-primary text-black text-nowrap rounded-4" href="#" role="button" data-bs-toggle="dropdown"
                      aria-expanded="false">
                      Profile
                      <i class="fa-regular fa-user"></i>
@@ -135,7 +146,6 @@ export const navBar = (
             </div>
          </div>
       </nav>
-   
    `;
 }
 
@@ -171,10 +181,7 @@ export const cardDetail = (
                <span class="fw-normal text-body-tertiary" style="font-size: 14px">${(date = formatDate)}</span>
             </div>
          </div>
-         <div>
-            <button class="btn btn-sm rounded-pill">
-               <i class="fa-solid fa-ellipsis"></i>
-            </button>
+         <div class='more' id='card-${id}'>
          </div>
       </div>
       <div class="card w-100 bg-transparent border-0">
@@ -192,7 +199,9 @@ export const cardDetail = (
    `;
 }
 
-export const moreButton = () => {
+//* more button
+export const moreButton = (id) => {
+
    return `
       <div class="btn-group">
          <button type="button" class="btn rounded-pill" data-bs-toggle="dropdown" aria-expanded="false">
@@ -200,13 +209,28 @@ export const moreButton = () => {
          </button>
          <ul class="dropdown-menu">
             <li>
-               <a class="dropdown-item" href=""><i class="fa-regular fa-pen-to-square"></i>&nbsp;Edit</a>
+               <button class="dropdown-item" onclick="location.href='../profile/update.html?id=${id}'" id="${id}"><i class="fa-regular fa-pen-to-square"></i>&nbsp;Edit</button>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
-               <button class="dropdown-item text-danger"><i class="fa-solid fa-trash-can"></i>&nbsp;Delete</button>
+               <button class="dropdown-item text-danger delete" id="${id}" onclick="deleteItem(${id})"><i class="fa-solid fa-trash-can"></i>&nbsp;Delete</button>
             </li>
          </ul>
       </div>
    `;
 }
+
+const TOKEN = localStorage.getItem('token');
+
+function deleteItem(id) {
+   fetch(`${BASE_URL}/articles/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${TOKEN}` }
+   })
+   .then(() => {
+      location.reload();
+   })
+   .catch(() => alert("Failed to delete article"));
+}
+
+window.deleteItem = deleteItem

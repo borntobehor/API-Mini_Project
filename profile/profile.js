@@ -1,84 +1,170 @@
-import { card } from "./cardpf.js";
+import { card, moreButton, navBar } from '../js/component.js';
+import { LOGOUT } from '../js/logout.js';
+import { observer } from '../js/tooltip.js';
 
-const token = localStorage.getItem("token");
-if (!token) location.href = "../auth/login.html";
+let isLogin = localStorage.getItem('isLogin');
+let TOKEN = localStorage.getItem('token')
 
-const baseURL = "http://blogs.csm.linkpc.net/api/v1";
-
-const nameEl = document.getElementById("name");
-const lastNameEl = document.getElementById("lastName");
-const avatarEl = document.getElementById("avatar");
-const articleList = document.getElementById("articleList");
-
-const stripHTML = html => html.replace(/<[^>]*>?/gm, '');
-
-function loadProfile() {
-    fetch(`${baseURL}/auth/profile`, {
-        headers: { Authorization: `Bearer ${token}` }
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.data) {
-            nameEl.textContent = data.data.firstName || "";
-            lastNameEl.textContent = data.data.lastName || "";
-            avatarEl.src = data.data.avatar || "https://via.placeholder.com/80";
-        }
-    })
-    .catch(err => console.error("Profile error:", err));
+if ((!isLogin || isLogin == null) || (!TOKEN || TOKEN == null)) {
+   location.href = '../auth/login.html'
+   localStorage.clear();
 }
 
-function loadArticles() {
-    fetch(`${baseURL}/articles/own?_page=1&_per_page=100&sortBy=createdAt&sortDir=desc`, {
-        headers: { Authorization: `Bearer ${token}` }
-    })
-    .then(res => res.json())
-    .then(data => {
-        const articles = Array.isArray(data.data) ? data.data : data.data?.items || [];
+const profile = document.getElementById('avatar');
+const firstName = document.getElementsByClassName('firstName')[0];
+const lastName = document.getElementsByClassName('lastName')[0];
+const content = document.querySelector('.content');
+const email = document.querySelector('.email')
 
-        if (!articles.length) {
-            articleList.innerHTML = "<p class='text-center text-muted'>No articles yet</p>";
-            return;
-        }
+document.querySelector('header').innerHTML = navBar('', '', '../index.html', '../article/category/create_category.html', '#', true);
 
-        articleList.innerHTML = "";
+//* loading
+const loading = document.querySelector('.loader');
 
-        articles.forEach(a => {
-            articleList.insertAdjacentHTML("beforeend", 
-                card(
-                    avatarEl.src,
-                    nameEl.textContent,
-                    lastNameEl.textContent,
-                    a.createdAt,
-                    a.title,
-                    stripHTML(a.content),
-                    a.thumbnail,
-                    a.category?.name,
-                    a.id
-                )
-            );
-        });
-
-        document.querySelectorAll(".edit-btn").forEach(btn => {
-            btn.onclick = () => location.href = `update.html?id=${btn.dataset.id}`;
-        });
-
-        document.querySelectorAll(".delete-btn").forEach(btn => {
-            btn.onclick = () => {
-                const id = btn.dataset.id;
-                if (confirm("Are you sure you want to delete this article?")) {
-                    fetch(`${baseURL}/articles/${id}`, {
-                        method: "DELETE",
-                        headers: { Authorization: `Bearer ${token}` }
-                    })
-                    .then(() => loadArticles())
-                    .catch(() => alert("Failed to delete article"));
-                }
-            };
-        });
-
-    })
-    .catch(err => console.error("Articles error:", err));
+function showLoading() {
+   loading.style.display = "block";
 }
 
+<<<<<<< HEAD
 loadProfile();
 loadArticles(); 
+=======
+function hideLoading() {
+   loading.style.display = "none";
+}
+
+//* for infinite scroll
+let page = 1;
+let isLoading = false;
+
+window.addEventListener("scroll", () => {
+   if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight) {
+      getProfile();
+   }
+});
+
+const BASE_URL = "http://blogs.csm.linkpc.net/api/v1";
+
+getProfile();
+
+function getProfile() {
+   fetch(`${BASE_URL}/auth/profile`, {
+      method: 'GET',
+      headers: {
+         'Authorization': `Bearer ${TOKEN}`
+      }
+   })
+   .then(res => res.json())
+   .then(res => {
+      const data = res.data;
+      profile.src = data.avatar;
+      firstName.innerText = data.firstName;
+      lastName.innerText = data.lastName;
+      email.innerText = data.email;
+      getOwnArticle();
+   })
+   
+}
+
+function getOwnArticle() {
+   
+   if (isLoading) return;
+   isLoading = true;
+   showLoading();
+   
+   fetch(`${BASE_URL}/articles/own?search=&_page=${page}&_per_page=100&sortBy=createdAt&sortDir=asc`, {
+      method: 'GET',
+      headers: {
+         'Authorization': `Bearer ${TOKEN}`
+      }
+   })
+   .then(res => res.json())
+   .then(res => {
+      res.data.items.forEach(element => {
+         content.innerHTML += card(
+            profile.src,
+            firstName.innerText,
+            lastName.innerText,
+            element.createdAt,
+            element.title,
+            element.content,
+            element.thumbnail,
+            element.category ? element.category.name : '',
+            element.id,
+            localStorage.getItem('userID')
+         );
+         const moreBtn = document.querySelectorAll(`#card-${element.id}`);
+         // console.log(moreButton);
+         moreBtn.forEach(more => {
+            more.innerHTML = moreButton(element.id);
+         })
+      })
+      page++;
+      hideLoading()
+      isLoading = false;
+   })
+}
+
+const saveChange = document.querySelector('.change')
+
+saveChange.onclick = () => {
+   const firstName = document.getElementById('firstName').value
+   const lastName = document.getElementById('lastName').value
+   const email = document.getElementById('email').value
+
+   if(!firstName || !lastName || !email) {
+      return;
+   }
+   fetch(`${BASE_URL}/profile`, {
+      method: 'PUT',
+      headers: { 
+         'Content-Type': 'application/json',
+         'Authorization': `Bearer ${TOKEN}`
+      },
+      body: JSON.stringify({
+         firstName,
+         lastName,
+         email
+      })
+   })
+   .then(res => res.json())
+   .then(() => {
+      location.reload();
+   })
+   .catch(err => console.error(err));
+}
+
+
+document.getElementById('edit').onclick = () => {
+   const formData = new FormData();
+   let avatarFile = document.getElementById("avatar_up");
+   formData.append("avatar", avatarFile.files[0]);
+   fetch(`${BASE_URL}/profile/avatar`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${TOKEN}` },
+      body: formData
+   })
+      .then(res => res.json())
+      .then(data => {
+         location.reload();
+      })
+}
+
+document.getElementById('delete').onclick = () => {
+   fetch(`${BASE_URL}/profile/avatar`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${TOKEN}` },
+   })
+      .then(res => res.json())
+      .then(data => {
+         location.reload();
+      })
+}
+
+// ? tool tip function
+observer.observe(document.body, { childList: true, subtree: true });
+
+// ? logout function
+LOGOUT.observe(document.body, { childList: true, subtree: true });
+
+>>>>>>> 67c67118ff5e9ea272346aea0f52e087eaf69946

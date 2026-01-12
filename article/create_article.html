@@ -100,9 +100,12 @@
       let category_id = document.querySelector("#category");
 
       let isLogin = localStorage.getItem('isLogin');
+      let TOKEN = localStorage.getItem('token')
 
-      if (!isLogin || isLogin == null) {
-         location.href = '../../auth/login.html'
+      if (( !isLogin || isLogin == null ) || ( !TOKEN || TOKEN == null )) {
+         location.href = '../auth/login.html'
+         localStorage.removeItem('isLogin')
+         localStorage.removeItem('token')
       }
 
       const baseUrlCategory = "http://blogs.csm.linkpc.net/api/v1/categories?_page=1&_per_page=10&sortBy=name&sortDir=ASC";
@@ -179,14 +182,17 @@
             .then((res) => res.json())
             .then((res) => {
                console.log("Upload thumbnail success:", res);
-               alert("Article created successfully!");
+               // alert("Article created successfully!");
                window.location.href = "../index.html";
             });
       };
    </script>
+<<<<<<< HEAD
   
    <!-- <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/index.js"></script> -->
+=======
+>>>>>>> 67c67118ff5e9ea272346aea0f52e087eaf69946
 </body>
 
 </html>

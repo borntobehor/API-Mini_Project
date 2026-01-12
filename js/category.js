@@ -1,242 +1,265 @@
-// DOM elements
-let result = document.getElementById('result');
-let search = document.getElementById('search');
-let loading = document.getElementById('loading');
-let scrollContainer = document.getElementById('scrollContainer');
-let toastTrigger = document.getElementById('liveToastBtn');
-let toastLiveExample = document.getElementById('liveToast');
-let create = document.getElementById('create');
-let toastcreate = document.getElementById('toastcreate');
-let createtoastbtn = document.getElementById('createtoastbtn');
-const toastLiveExample1 = document.getElementById('liveToast1');
-let edittoastbtn = document.getElementById('edittoastbtn');
-let edit = document.getElementById('edit');
+import { navBar } from "./component.js";
+
 
 let isLogin = localStorage.getItem('isLogin');
+let TOKEN = localStorage.getItem('token')
 
-if (!isLogin || isLogin == null) {
-   location.href = '../../auth/login.html'
+if ((!isLogin || isLogin == null) || (!TOKEN || TOKEN == null)) {
+   location.href = '../auth/login.html'
+   localStorage.removeItem('isLogin')
+   localStorage.removeItem('token')
 }
 
-// API settings
-let base_url = "http://blogs.csm.linkpc.net/api/v1";
+document.querySelector('header').innerHTML = navBar('', 'active', '../../index.html', '#', '../../profile/profile.html', true);
+
+const content = document.querySelector(".content");
+const category = document.getElementById('category');
+const categoryBtn = document.getElementById('categoryBtn');
+const deleteBtn = document.getElementById('delete');
+const toastLive = document.getElementById('liveToast');
+const toast = document.querySelector('.toast');
+const toastMessage = document.querySelector('.toast-message');
+const search = document.getElementById('search');
+
+const BASE_URL = "http://blogs.csm.linkpc.net/api/v1";
+
+//* loading
+const loading = document.getElementById('loading');
+const loader = document.querySelector('.loader');
+
+function showLoading() {
+   loader.style.display = "block";
+}
+
+function hideLoading() {
+   loader.style.display = "none";
+}
+
+//* for infinite scroll
 let currentPage = 1;
 let perPage = 10;
 let isLoading = false;
 let hasMore = true;
 
-// Fetch categories
-function fetchCategories() {
-    if (isLoading || !hasMore) return;
+fetchAll();
 
-    isLoading = true;
-    loading.style.display = "block";
+window.addEventListener("scroll", () => {
+   if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50) {
+      fetchAll();
+   }
+});
 
-    fetch(`${base_url}/categories?_page=${currentPage}&_per_page=${perPage}&sortBy=name&sortDir=ASC&search=${search.value}`)
-        .then(res => res.json())
-        .then(res => {
-            const items = res.data.items;
+if(categoryBtn || deleteBtn) {
+   const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLive)
+   categoryBtn.addEventListener('click', () => {
+      toastBootstrap.show()
+   })
+}
 
-            if (!items || items.length === 0) {
-                hasMore = false;
-                loading.innerText = "No more categories";
-                isLoading = false;
-                return;
-            }
-            items.forEach(element => {
-                result.innerHTML += `
-                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                        <span>${element.name}</span>
-                        <div class="d-flex justify-content-end">
-                            <button 
-                                class="btn btn-sm btn-secondary me-2"
-                                onclick="getId(${element.id})" data-bs-toggle="modal" data-bs-target="#staticBackdropEdit">
-                                <i class="fa-solid fa-marker"></i>
-                            </button>
-                            <button 
-                                class="btn btn-sm btn-danger"
-                                data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="getId(${element.id})">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
+//* toast success
+function toastSuccess(name, message) {
+   toast.classList.remove('bg-danger-subtle');
+   toast.classList.remove('border');
+   toast.classList.remove('border-danger');
+   toast.classList.remove('text-danger');
+
+   toast.classList.add('bg-success-subtle');
+   toast.classList.add('border');
+   toast.classList.add('border-success');
+   toast.classList.add('text-success');
+   toastMessage.innerHTML = `<i class="fa-solid fa-circle-check"></i>&nbsp;Category ${!name ? '' : `"${name}"`} ${!message ? '' : `${message}`}`
+}
+
+//* toast fail
+function toastFail(name, message) {
+   toast.classList.remove('bg-success-subtle');
+   toast.classList.remove('border');
+   toast.classList.remove('border-success');
+   toast.classList.remove('text-success');
+
+   toast.classList.add('bg-danger-subtle');
+   toast.classList.add('border');
+   toast.classList.add('border-danger');
+   toast.classList.add('text-danger');
+   toastMessage.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i>&nbsp;Category ${!name ? '' : `"${name}"`} ${!message ? '' : `${message}`}`
+}
+
+function fetchAll() {
+   if (isLoading || !hasMore) return;
+   isLoading = true;
+   showLoading();
+
+   fetch(`${BASE_URL}/categories?_page=${currentPage}&_per_page=${perPage}&sortBy=name&sortDir=ASC&search=${search.value ? search.value.trim('') : ''}`, {
+      method: 'GET'
+   })
+   .then(res => res.json())
+   .then(res => {
+      const items = res. data.items;
+
+      if (!items || items.length === 0) {
+         hasMore = false;
+         loading.classList.remove('d-none');
+         loading.classList.remove('d-none');
+         loading.innerHTML = '<i class="fa-solid fa-warning"></i> &nbsp; No more categories';
+         hideLoading();
+         isLoading = false;
+         return;
+      }
+      items.forEach(element => {
+         content.innerHTML += `
+            <div class="col-12">
+               <div class="card rounded-4">
+                  <div class="card-body">
+                     <div class="d-flex flex-wrap align-items-end justify-content-between">
+                        <h5 class="card-title text-wrap">${element.name}</h5>
+                        <div class="d-flex gap-3 justify-self-end ms-auto">
+                           <button class="d-block btn border rounded-4 edit text-nowrap" id="${element.id}" onclick="editCategory(${element.id})" data-bs-toggle="modal"
+                           data-bs-target="#createCategory" data-bs-dismiss="modal"><i class="fa-solid fa-pen-to-square"></i>&nbsp;Edit</button>
+                           <button class="d-block btn btn-danger rounded-4 text-nowrap" onclick="deleteCategory(${element.id})" data-bs-toggle="modal" data-bs-target="#deleteCategory" data-bs-dismiss="modal"><i class="fa-solid fa-trash-can"></i>&nbsp;Delete</button>
                         </div>
-                    </div>
-                `;
-            });
-
-            currentPage++;
-            isLoading = false;
-            loading.style.display = "none";
-        })
-        .catch(err => {
-            console.error(err);
-            isLoading = false;
-            loading.style.display = "none";
-        });
+                     </div>
+                  </div>
+               </div>
+            </div>
+         `
+      });
+      
+      currentPage++;
+      isLoading = false;
+      hideLoading();
+   })
+   .catch(error => {
+      console.error(error);
+      isLoading = false;
+      hideLoading();
+   })
 }
 
-function getId(categoryId) {
-    sessionStorage.setItem('categoryId', categoryId);
-    fetch(`${base_url}/categories/${categoryId}`, {
-        method: "GET",
-        headers: {
-            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjk2OCwiaWF0IjoxNzY3MDgzOTg2LCJleHAiOjE3Njc2ODg3ODZ9.dw1xtH6-HGRYmVdHlPV4pBL0flOnTqlU2vsgi3j8IaM`,
+//* edit
+function editCategory(id, ) {
+   fetch(`${BASE_URL}/categories/${id}`, {
+      method: 'GET',
+   })
+   .then(res => res.json())
+   .then(res => {
+      category.value = res.data.name;
+      categoryBtn.innerText = 'Update Category'
+   })
+   categoryBtn.onclick = () => {
+      fetch(`${BASE_URL}/categories/${id}`, {
+         method: 'PUT',
+         headers: {
+            'Authorization' : `Bearer ${TOKEN}`,
             'Content-Type': 'application/json'
-        }
-    })
-        .then(res => res.json())
-        .then(res => {
-            edit.value = res.data.name;
-        })
-        .catch(err => {
-            console.error(err);
-        }
-        );
-}
-// Delete category
-function deleteCategory() {
-    // const token = localStorage.getItem('token');
-    fetch(`${base_url}/categories/${sessionStorage.getItem('categoryId')}`, {
-        method: "DELETE",
-        headers: {
-            // 'Authorization': `Bearer ${token}`
-            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjk2OCwiaWF0IjoxNzY3MDgzOTg2LCJleHAiOjE3Njc2ODg3ODZ9.dw1xtH6-HGRYmVdHlPV4pBL0flOnTqlU2vsgi3j8IaM`
-        }
-    })
-        .then(res => res.json())
-        .then(res => {
-            if (toastTrigger) {
-                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-                toastBootstrap.show()
-                toa.innerHTML = "Category deleted successfully";
-                // delete categories
-                if (res.result) {
-                    result.innerHTML = "";
-                    currentPage = 1;
-                    hasMore = true;
-                    fetchCategories();
-                }
-            }
-        })
-        .catch(err => {
-            console.error(err);
-        });
+         },
+         body: JSON.stringify({ name: category.value })
+      })
+      .then(res => res.json())
+      .then(res => {
+         if (!res.result) {
+            throw new Error('already exist')
+         }
+         currentPage = 1;
+         content.innerHTML = ''
+         fetchAll();
+         toastSuccess('', 'updated successfully')
+      })
+      .catch(error => {
+         toastFail(category.value, error.message)
+      })
+   }
 }
 
-// Edit category
-function editCategory() {
-    fetch(`${base_url}/categories/${sessionStorage.getItem('categoryId')}`, {
-        method: "PUT",
-        headers: {
-            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjk2OCwiaWF0IjoxNzY3MDgzOTg2LCJleHAiOjE3Njc2ODg3ODZ9.dw1xtH6-HGRYmVdHlPV4pBL0flOnTqlU2vsgi3j8IaM`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name: edit.value })
-    })
-        .then(res => res.json())
-        .then(res => {
-            if (edittoastbtn) {
-                const toastBootstrap2 = bootstrap.Toast.getOrCreateInstance(toastLiveExample1)
-                toastBootstrap2.show()
-            }
-            // edit categories
-            if (res.result) {
-                result.innerHTML = "";
-                currentPage = 1;
-                hasMore = true;
-                fetchCategories();
-                toastcreate.innerHTML = "Category Edited successfully";
-                toastLiveExample1.classList.remove('text-danger');
-                toastLiveExample1.classList.remove('bg-danger-subtle');
-                toastLiveExample1.classList.remove('border-danger');
-            }
-            if(!res.result){
-                toastcreate.innerHTML = "Category name already exists";
-                toastLiveExample1.classList.add('text-danger');
-                toastLiveExample1.classList.add('bg-danger-subtle');
-                toastLiveExample1.classList.add('border-danger');
-            }
-        })
-        .catch(err => {
-            console.error(err);
-        });
-}
-// Initial load
-fetchCategories();
 
-// Infinite scroll
-scrollContainer.addEventListener('scroll', () => {
-    if (
-        scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 50
-    ) {
-        fetchCategories();
-    }
-});
-
-// Search reset
-search.addEventListener('input', () => {
-    result.innerHTML = "";
-    currentPage = 1;
-    hasMore = true;
-    fetchCategories();
-});
-
-// createCategory
+//* create
 function createCategory() {
-    fetch(`${base_url}/categories`, {
-        method: "POST",
-        headers: {
+   category.value = ''
+   categoryBtn.onclick = () => {
+      fetch(`${BASE_URL}/categories`, {
+         method: 'POST',
+         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjk2OCwiaWF0IjoxNzY3MDgzOTg2LCJleHAiOjE3Njc2ODg3ODZ9.dw1xtH6-HGRYmVdHlPV4pBL0flOnTqlU2vsgi3j8IaM`
-        },
-        body: JSON.stringify({ name: create.value })
-    })
-        .then(res => res.json())
-        .then(res => {
-            if (toastcreate) {
-                const toastBootstrap1 = bootstrap.Toast.getOrCreateInstance(toastLiveExample1)
-                toastBootstrap1.show()
+            'Authorization': `Bearer ${TOKEN}`
+         },
+         body: JSON.stringify({ name: category.value })
+      })
+      .then(res => res.json())
+      .then(res => {
+         if (!res.result) {
+            throw new Error(`already exist`)
+         }
+         currentPage = 1;
+         content.innerHTML = ''
+         fetchAll();
+         toastSuccess(category.value, 'create successfully')
+      })
+      .catch(error => {
+         toastFail(category.value, error.message)
+      })
+   }
+}
+
+const name = '';
+let getId = 0;
+
+//* delete
+function deleteCategory(id) {
+   getId = id;
+   fetch(`${BASE_URL}/categories/${getId}`, {
+      method: 'GET'
+   })
+   .then(res => res.json())
+   .then(res => {
+      document.querySelector('.delete-message').innerHTML = `<div>Are you want to delete <span class="text-danger fw-bold">"${res.data.name}"</span> category?</div>`;
+      deleteBtn.onclick = () => {
+         fetch(`${BASE_URL}/categories/${getId}`, {
+            method: 'DELETE',
+            headers: {
+               'Authorization': `Bearer ${TOKEN}`
             }
-            // create categories
+         })
+         .then(res => res.json())
+         .then(res => {
             if (res.result) {
-                result.innerHTML = "";
-                create.value = "";
-                currentPage = 1;
-                hasMore = true;
-                fetchCategories();
-                toastcreate.innerHTML = "Category created successfully";
-                toastLiveExample1.classList.remove('text-danger');
-                toastLiveExample1.classList.remove('bg-danger-subtle');
-                toastLiveExample1.classList.remove('border-danger');
+               name  = res.data.name;
+               content.innerHTML = ''
+               currentPage = 1;
+               fetchAll();
+               toastSuccess(name, 'create successfully')
             }
             if (!res.result) {
-                toastcreate.innerHTML = "Category already created";
-                toastLiveExample1.classList.add('text-danger');
-                toastLiveExample1.classList.add('bg-danger-subtle');
-                toastLiveExample1.classList.add('border-danger');
+               throw new Error(`${res.message}`)
             }
-            // create categories
-            // result.innerHTML = `
-            // <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-            //             <span>${create.value}</span>
-            //             <div class="d-flex justify-content-end">
-            //                 <button 
-            //                     class="btn btn-sm btn-secondary me-2"
-            //                     onclick="editCategory(${res.id})">
-            //                     <i class="fa-solid fa-marker"></i>
-            //                 </button>
-            //                 <button 
-            //                     class="btn btn-sm btn-danger"
-            //                     data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="getId(${res.id})">
-            //                     <i class="fa-solid fa-trash-can"></i>
-            //                 </button>
-            //             </div>
-            //         </div>
-            // `
-            // ;
-
-        })
-        .catch(err => {
-            console.error(err);
-            toastcreate.innerHTML = "Category already created";
-        });
+         })
+         .catch(error => {
+            toastFail(name, error.message)
+         })
+      }
+   })
 }
+
+search.addEventListener('keyup', (event) => {
+   content.innerHTML = "";
+   currentPage = 1;
+   hasMore = true;
+   fetchAll();
+   if (!search.value) {
+      fetchAll()
+   }
+});
+
+function searchBtn() {
+   content.innerHTML = "";
+   currentPage = 1;
+   hasMore = true;
+   fetchAll();
+   if (!search.value) {
+      fetchAll()
+   }
+}
+
+window.editCategory = editCategory
+window.createCategory = createCategory
+window.deleteCategory = deleteCategory
+window.searchBtn = searchBtn
+// window.deleteButton = deleteButton

@@ -29,7 +29,6 @@ export const observer = new MutationObserver((mutationsList, observer) => {
             tooltip.style.top = e.clientY + 12 + "px";
          });
       })
-
-      observer.disconnect(); // Stop observing once found
    }
+   observer.disconnect(); // Stop observing once found
 });

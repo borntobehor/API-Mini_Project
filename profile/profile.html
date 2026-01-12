@@ -7,27 +7,101 @@
    <title>My Profile</title>
 
    <link rel="stylesheet" href="../scss/bootstrap.css">
+   <link rel="stylesheet" href="../style/style.css">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 </head>
 
 <body data-bs-theme="dark">
 
-<script>
-const token = localStorage.getItem("token");
-if(!token) location.href="../auth/login.html";
-</script>
+   <header class="position-sticky top-0 z-3 bg-body"></header>
 
-<div class="container mt-4 col-md-5">
+   <section>
+      <!-- * update profile -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4">
+               <div class="modal-header border-0">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Choose file of photo</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+                  <input class="form-control rounded-4" id="avatar_up" type="file" src="" alt="">
+               </div>
+               <div class="modal-footer border-0">
+                  <button class="btn btn-danger rounded-4 fw-medium mt-2" id="delete"><i class="fa-regular fa-trash-can"></i> Delete Avatar</button>
+                  <button class="btn btn-primary rounded-4 fw-medium mt-2" id="edit"><i class="fa-solid fa-pen-to-square"></i> Update Avatar</button>
+               </div>
+            </div>
+         </div>
+      </div>
 
-<h4 class="text-center text-light mb-3">My Profile</h4>
+      <!-- * update info -->
+      <div class="modal fade" id="editProfile" tabindex="-1" aria-labelledby="editProfileLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-5">
+               <div class="modal-header border-0">
+               <h1 class="modal-title fs-5" id="editProfilLabel">Edit Profile</h1>
+               <button type="button" class="btn-close rounded-circle" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+                  <form>
+                     <div class="mb-3">
+                        <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control rounded-4" id="firstName" aria-describedby="firstNameHelp" placeholder="First name">
+                     </div>
+                     <div class="mb-3">
+                        <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control rounded-4" id="lastName" aria-describedby="lastNameHelp" placeholder="Last name">
+                     </div>
+                     <div class="mb-3">
+                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control rounded-4" id="email" aria-describedby="emailHelp" placeholder="Email">
+                     </div>
+                  </form>
+               </div>
+               <div class="modal-footer border-0">
+                  <button type="button" class="btn rounded-4" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary change rounded-4" data-bs-dismiss="modal">Save changes</button>
+               </div>
+            </div>
+         </div>
+      </div>
 
-<div class="card mb-4 text-center p-3">
-    <img id="avatar" class="rounded-circle mx-auto mb-2" style="width:80px;height:80px;object-fit:cover;">
-    <h5 id="name" class="text-light"></h5>
-    <small id="lastName" class="text-muted"></small>
-</div>
+      <div class="container mt-4">
+         
+         <div class="row m-auto justify-content-center">
+            <div class="col-lg-7">
+               <div class="card border mb-4 p-3 rounded-5">
+                  <div class="d-flex justify-content-between align-items-start">
+                     <div class="d-flex flex-column gap-4">
+                        <div class="d-flex position-relative" style="width: fit-content;">
+                           <img id="avatar" class="rounded-circle d-block" style="width:80px;height:80px;object-fit:cover;">
+                           <button type="button" class="btn btn-sm btn-primary rounded-5 position-absolute" data-bs-toggle="modal" data-bs-target="#exampleModal" style="bottom: -10px;right: -10px">
+                              <i class="fa-solid fa-pen"></i>
+                           </button>
+                        </div>
+                        <div class="">
+                           <div class="d-flex">
+                              <h5 class="firstName"></h5>
+                              &nbsp;
+                              <h5 class="lastName"></h5>
+                           </div>
+                           <h6 class="email text-muted"></h6>
+                        </div>
+                     </div>
+                     <button type="button" class="btn btn-primary rounded-5" data-bs-toggle="modal" data-bs-target="#editProfile">
+                        <i class="fa-solid fa-pen"></i> Edit Profile
+                     </button>
+                  </div>
+               </div>
+               <hr style="margin-block: 50px;">
+            </div>
+         </div>
+      </div>
+   </section>
 
+<<<<<<< HEAD
 <div class="text-end mb-3">
     <a class="btn btn-primary rounded-circle" href="../article/create_article.html">
         <i class="fa fa-plus"></i>
@@ -59,6 +133,19 @@ fetch(`${baseURL}/auth/profile`, {
 
 </script>
 <script src="profile.js" type="module"></script>
+=======
+   
+   <section>
+      <div class="container">
+         <div class="row justify-content-center align-items-center">
+            <div class="col-lg-7 content d-flex flex-wrap gap-5 pb-5"></div>
+         </div>
+         <span class="loader m-auto my-5"></span>
+      </div>
+   </section>
+>>>>>>> 67c67118ff5e9ea272346aea0f52e087eaf69946
 </body>
+<script src="../js/bootstrap.bundle.min.js"></script>
+<script type="module" src="profile.js"></script>
 
 </html> 
